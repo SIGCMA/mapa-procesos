@@ -1,1 +1,1030 @@
- <h1>Mapa de procesos SIGCMA – en construcción</h1>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa de Procesos SIGCMA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+[hidden]{display:none!important}
+/* Layout: franja de objetivos PSD a la izquierda que empuja (flecha) hacia el mapa; mapa en 4 niveles como la versión oficial; panel lateral de documentos */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#0f1f33; --muted:#566377; --line:#d8dee7;
+  --navy:#004082; --navy-ink:#ffffff;
+  --est:#ec8a2c; --est-soft:#fdebd9; --est-ink:#3b1d00;
+  --mis:#10a2e0; --mis-soft:#dcf2fc; --mis-ink:#ffffff;
+  --apo:#f6c932; --apo-soft:#fdf4d3; --apo-ink:#2e2400;
+  --eva:#0e8040; --eva-dark:#0e8040; --eva-soft:#e5f2df; --eva-ink:#ffffff;
+  --usr:#16566a; --usr-ink:#ffffff;
+  --sis:#5b4bb7; --sis-soft:#ece9fb; --sis-ink:#ffffff;
+  --focus:#0d2b52; --mark:#fff3a8;
+  --display:"Montserrat",system-ui,"Segoe UI",Arial,sans-serif;
+  --body:"Source Sans 3",system-ui,"Segoe UI",Arial,sans-serif;
+  --shadow:0 1px 2px rgba(13,43,82,.08),0 6px 20px rgba(13,43,82,.08);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b1522; --surface:#121f30; --ink:#e7edf5; --muted:#9daabd; --line:#24354b;
+  --navy:#1c4a85; --est-soft:#3a2510; --mis-soft:#0d3246; --apo-soft:#3a3010; --eva-soft:#1c3318;
+  --usr:#1f6f86; --focus:#7fc4ff; --mark:#5a4d00; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3); --navy:#004082; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b1522; --surface:#121f30; --ink:#e7edf5; --muted:#9daabd; --line:#24354b;
+  --navy:#1c4a85; --est-soft:#3a2510; --mis-soft:#0d3246; --apo-soft:#3a3010; --eva-soft:#1c3318;
+  --usr:#1f6f86; --focus:#7fc4ff; --mark:#5a4d00; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3); --navy:#004082; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* Encabezado */
+header.top{background:var(--navy);color:var(--navy-ink)}
+header.top .wrap{padding-block:18px 20px;display:grid;gap:14px}
+.brand{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.brand small{font-family:var(--display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+.brand h1{font-size:clamp(20px,3vw,26px);font-weight:800}
+.tagline{font-size:14px;opacity:.85;max-width:70ch}
+.searchbar{position:relative;display:flex;gap:8px;flex-wrap:wrap}
+.searchbox{flex:1 1 320px;min-width:0;position:relative}
+.searchbox input{width:100%;padding:12px 44px 12px 42px;border-radius:10px;border:0;font:inherit;font-size:16px;background:#fff;color:#0f1f33}
+.searchbox svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#566377}
+.searchbox kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;background:#eef1f5;color:#566377;border-radius:5px;padding:2px 6px;font-family:var(--body)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:#fff;color:var(--navy);border-color:#fff;font-weight:600}
+.btn-ai{background:var(--apo);color:var(--apo-ink);border:0;border-radius:10px;padding:0 16px;font-weight:700;font-family:var(--display);font-size:13px;cursor:pointer;min-height:46px;display:flex;align-items:center;gap:8px}
+.results{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);color:var(--ink);border-radius:12px;box-shadow:var(--shadow);max-height:min(60vh,460px);overflow:auto;z-index:30;border:1px solid var(--line)}
+.results h4{font-family:var(--display);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 14px 4px}
+.res{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;padding:9px 14px;cursor:pointer;border:0;background:none;width:100%;text-align:left}
+.res:hover,.res.active{background:var(--bg)}
+.res .sw{width:10px;height:10px;border-radius:3px;margin-top:6px;grid-row:span 2}
+.res b{font-weight:600}
+.res span{font-size:13px;color:var(--muted)}
+mark{background:var(--mark);color:inherit;border-radius:2px;padding:0 1px}
+.empty{padding:14px;color:var(--muted);font-size:14px}
+
+/* Indicadores */
+.stats{display:flex;flex-wrap:wrap;gap:8px 22px;padding-block:14px 0;font-size:13px;color:var(--muted)}
+.stats b{font-family:var(--display);color:var(--ink);font-size:15px;font-variant-numeric:tabular-nums}
+.note{font-size:12.5px;color:var(--muted);padding-block:6px 0}
+
+/* Mapa */
+main .wrap{padding-block:18px 40px}
+.map{display:grid;grid-template-columns:230px minmax(0,1fr);gap:18px;align-items:start}
+.psd{background:var(--navy);color:#fff;border-radius:14px;padding:16px 14px;display:grid;gap:10px;position:relative}
+.psd h2{font-size:13px;font-weight:800;text-align:center;line-height:1.3}
+.psd h2 em{display:block;font-style:normal;font-weight:600;font-size:12px;opacity:.85;margin-top:4px}
+.obj{background:#fff;color:#004082;border:0;border-radius:8px;padding:10px 10px 14px;font-family:var(--display);font-weight:700;font-size:12px;line-height:1.3;cursor:pointer;text-align:center;clip-path:polygon(0 0,100% 0,100% 85%,50% 100%,0 85%)}
+.obj[aria-pressed="true"]{background:var(--apo);color:var(--apo-ink)}
+.psd .hint{font-size:11.5px;opacity:.8;text-align:center}
+
+.levels{display:grid;gap:14px;min-width:0}
+.level{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:stretch}
+.tag{border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg);padding:10px 0}
+.lv-est .tag{background:var(--est);color:var(--est-ink)}
+.lv-mis .tag{background:var(--usr);color:#fff}
+.lv-apo .tag{background:var(--apo);color:var(--apo-ink)}
+.lv-eva .tag{background:var(--eva-dark);color:#fff}
+.lv-sis .tag{background:var(--sis);color:#fff}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0}
+.grid{display:grid;gap:8px}
+.lv-est .grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.lv-apo .grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.lv-eva .grid,.lv-sis .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.mis-row{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;gap:10px}
+.usr{background:var(--usr);color:#fff;border-radius:8px;writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;text-align:center}
+.usr.out{transform:none}
+.lv-mis .grid{grid-template-columns:1fr}
+.flow{display:flex;justify-content:center;color:var(--navy);margin:-6px 0}
+.flow svg{width:44px;height:22px}
+:root[data-theme="dark"] .flow,.flow{color:var(--muted)}
+
+.proc{border:0;border-radius:6px 22px 6px 6px;padding:10px 12px;font-family:var(--display);font-weight:600;font-size:13px;line-height:1.25;cursor:pointer;text-align:center;position:relative;transition:transform .15s ease,opacity .2s ease,box-shadow .15s ease;display:flex;align-items:center;justify-content:center;min-height:44px}
+.proc:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.proc .n{position:absolute;top:-7px;right:-4px;background:var(--navy);color:#fff;font-size:10.5px;font-weight:700;border-radius:999px;padding:1px 7px;font-variant-numeric:tabular-nums}
+.proc.est{background:var(--est);color:var(--est-ink)}
+.proc.mis{background:var(--mis);color:#fff;font-weight:700}
+.proc.apo{background:var(--apo);color:var(--apo-ink)}
+.proc.eva{background:var(--eva);color:var(--eva-ink)}
+.proc.sis{background:var(--sis);color:var(--sis-ink)}
+.p-head.sis{background:var(--sis)}
+.pend{border:1.5px dashed var(--paper-line);border-radius:8px;padding:calc(18px * var(--z));text-align:center;margin:calc(14px * var(--z)) 0;color:#3b4654}
+.pend b{display:block;font-size:calc(14px * var(--z));color:#004082;margin-bottom:calc(4px * var(--z))}
+.loading{padding:20px;color:var(--muted);font-size:14px}
+.dim .proc:not(.hit){opacity:.22}
+.proc.hit{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--navy)}
+:root[data-theme="dark"] .proc.hit{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--focus)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .proc.hit{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--focus)}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);padding-top:4px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.phva{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--muted)}
+.phva b{font-family:var(--display);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--ink)}
+
+/* Panel */
+.scrim{position:fixed;inset:0;background:rgba(8,20,36,.45);z-index:40}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--surface);z-index:50;display:flex;flex-direction:column;box-shadow:-10px 0 30px rgba(0,0,0,.18);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.p-head{padding:18px 20px 14px;color:#fff;display:grid;gap:6px;position:relative}
+.p-head.est{background:var(--est);color:var(--est-ink)}
+.p-head.mis{background:var(--mis)}
+.p-head.apo{background:var(--apo);color:var(--apo-ink)}
+.p-head.eva{background:var(--eva-dark)}
+.p-head small{font-family:var(--display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;opacity:.85}
+.p-head h2{font-size:21px;font-weight:800;padding-right:40px}
+.close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.18);color:inherit;cursor:pointer;font-size:20px;line-height:1}
+.p-body{overflow:auto;padding:16px 20px 28px;display:grid;gap:16px;align-content:start}
+.p-body p{margin:0;max-width:65ch}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0;font-weight:500}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.tab{border:0;background:none;padding:8px 10px;border-bottom:3px solid transparent;cursor:pointer;font-weight:600;font-size:14px;color:var(--muted)}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--navy)}
+:root[data-theme="dark"] .tab[aria-selected="true"]{border-color:var(--focus)}
+.tab .c{font-variant-numeric:tabular-nums;font-weight:500;margin-left:4px}
+.doc{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+.doc code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:var(--muted)}
+.doc .t{font-weight:600}
+.doc .meta{font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px}
+.pill{font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;background:var(--eva-soft);color:var(--eva-dark)}
+.pill.rev{background:var(--apo-soft);color:#7a5a00}
+:root[data-theme="dark"] .pill.rev{color:var(--apo)}
+.acts{display:flex;gap:6px;grid-row:span 3}
+.acts a,.acts button{font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 10px;text-decoration:none;color:var(--ink);cursor:pointer;white-space:nowrap}
+.preview{background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:14px;font-size:14px;display:grid;gap:6px}
+.preview h4{margin:0;font-family:var(--display);font-size:14px}
+.rel{display:flex;flex-wrap:wrap;gap:6px}
+.rel button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:13px;cursor:pointer}
+
+/* Asistente */
+.ai{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(420px,calc(100vw - 32px));max-height:min(620px,calc(100vh - 40px));background:var(--surface);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.25);z-index:60;display:flex;flex-direction:column;border:1px solid var(--line);overflow:hidden}
+.ai-head{background:var(--navy);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.ai-head h3{font-size:14px;font-weight:800;flex:1}
+.ai-head p{margin:0;font-size:11.5px;opacity:.85}
+.ai-log{overflow:auto;padding:14px;display:grid;gap:10px;align-content:start;flex:1;min-height:200px}
+.msg{padding:10px 12px;border-radius:12px;max-width:92%;font-size:14px}
+.msg.u{background:var(--navy);color:#fff;justify-self:end;border-bottom-right-radius:4px}
+.msg.b{background:var(--bg);justify-self:start;border-bottom-left-radius:4px}
+.msg.b ol{margin:6px 0 0;padding-left:18px;display:grid;gap:4px}
+.msg.b button.cite{border:0;background:none;padding:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit;font-weight:600;text-align:left}
+.sugs{display:flex;flex-wrap:wrap;gap:6px}
+.sugs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 10px;font-size:12.5px;cursor:pointer}
+.ai form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
+.ai input{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;background:var(--bg);color:var(--ink)}
+.ai form button{border:0;background:var(--navy);color:#fff;border-radius:10px;padding:0 14px;font-weight:700;cursor:pointer}
+.ai .disc{font-size:11.5px;color:var(--muted);padding:0 12px 10px}
+
+/* Visor de documentos: la hoja es papel blanco a propósito en ambos temas */
+:root{--paper:#ffffff;--paper-ink:#1b2430;--paper-line:#9aa6b4;--paper-soft:#eef2f6;--stage:#5b6878}
+.viewer{position:fixed;inset:0;z-index:70;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--stage)}
+.v-bar{background:var(--navy);color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.v-title{flex:1 1 240px;min-width:0}
+.v-title b{display:block;font-family:var(--display);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v-title span{font-size:12.5px;opacity:.85}
+.v-tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.v-tools button,.v-tools a{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:8px;padding:6px 10px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap}
+.v-tools .primary{background:var(--apo);color:var(--apo-ink);border-color:var(--apo)}
+.v-tools output{font-variant-numeric:tabular-nums;font-size:13px;min-width:44px;text-align:center}
+.v-stage{overflow:auto;padding:24px 16px calc(32px + env(safe-area-inset-bottom,0px));display:grid;justify-items:center;gap:20px;align-content:start}
+.page{--z:1;width:calc(794px * var(--z));min-height:calc(700px * var(--z));background:var(--paper);color:var(--paper-ink);font-family:"Source Sans 3",Arial,sans-serif;font-size:calc(12.5px * var(--z));line-height:1.4;padding:calc(48px * var(--z)) calc(56px * var(--z));box-shadow:0 4px 18px rgba(0,0,0,.35);position:relative;overflow:hidden}
+.page::after{content:none;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:calc(120px * var(--z));color:rgba(13,43,82,.05);transform:rotate(-30deg);pointer-events:none}
+.page table{width:100%;border-collapse:collapse;margin:calc(8px * var(--z)) 0 calc(14px * var(--z))}
+.page td,.page th{border:1px solid var(--paper-line);padding:calc(5px * var(--z)) calc(7px * var(--z));vertical-align:top;text-align:left}
+.page th{background:var(--paper-soft);font-weight:600}
+.page h5{font-family:var(--display);font-size:calc(12px * var(--z));margin:calc(14px * var(--z)) 0 calc(4px * var(--z));letter-spacing:.02em}
+.page p{margin:0 0 calc(8px * var(--z))}
+.hdr td{vertical-align:middle}
+.hdr .logo{width:28%;text-align:center;font-family:var(--display);font-weight:800;font-size:calc(11px * var(--z));line-height:1.25}
+.hdr .logo small{display:block;font-weight:600;font-size:calc(9.5px * var(--z))}
+.hdr .logo svg{width:calc(30px * var(--z));height:calc(30px * var(--z));display:block;margin:0 auto calc(4px * var(--z))}
+.hdr .tt{text-align:center;font-family:var(--display);font-size:calc(10.5px * var(--z))}
+.hdr .tt b{display:block;font-size:calc(13px * var(--z));margin-top:calc(3px * var(--z))}
+.hdr .meta{width:24%;font-size:calc(11px * var(--z))}
+.blank{height:calc(22px * var(--z))}
+.pfoot{margin-top:calc(24px * var(--z));display:flex;justify-content:space-between;font-size:calc(10px * var(--z));color:#5a6573;border-top:1px solid var(--paper-line);padding-top:calc(6px * var(--z))}
+.x{text-align:center;font-weight:700}
+.v-note{font-size:12.5px;color:#fff;opacity:.9;max-width:794px;text-align:center}
+.doc .t button{all:unset;cursor:pointer;font-weight:600}
+.doc .t button:hover{text-decoration:underline}
+.doc .t button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:55;display:flex;align-items:center;gap:8px;background:var(--navy);color:#fff;border:2px solid var(--apo);border-radius:999px;padding:12px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+.fab svg{color:var(--apo)}
+.fab:hover{transform:translateY(-2px)}
+
+
+/* Marco del Sistema de Gestión Antisoborno, como en el mapa oficial */
+:root{--frame:#8a96a6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--frame:#5d6c80}}
+:root[data-theme="dark"]{--frame:#5d6c80}
+.sgas{position:relative;border:2px solid var(--frame);border-radius:3px;padding:44px 22px 30px;margin-top:10px}
+.sgas::before,.sgas::after{content:"";position:absolute;bottom:-11px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:11px solid var(--frame)}
+.sgas::before{left:-9px}.sgas::after{right:-9px}
+.sgas-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--bg);border:0;padding:2px 16px;font-family:var(--display);font-weight:800;font-size:12.5px;letter-spacing:.08em;color:var(--ink);cursor:pointer;white-space:nowrap}
+.sgas-tag:hover{color:var(--navy);text-decoration:underline}
+.sgas-title{display:block;width:max-content;max-width:100%;margin:0 auto 4px;background:var(--mis);color:#fff;font-family:var(--display);font-weight:800;font-size:clamp(15px,2.2vw,19px);letter-spacing:.05em;padding:9px 30px;border-radius:12px 12px 4px 4px;text-align:center}
+/* Título centrado sobre las cajas de procesos; la leyenda antisoborno, centrada en el marco con líneas iguales a cada lado */
+.sgas-title{position:relative;left:-72px}
+@media (min-width:861px){.map .psd-wrap{align-self:start}.map .psd-wrap .psd{grid-template-rows:repeat(5,minmax(0,1fr)) auto;gap:12px}.map .psd-wrap .obj{display:flex;align-items:center;justify-content:center;padding:10px 10px 22px}}
+@media (min-width:861px){.sgas-tag{left:calc(50% + 41px)}}
+@media (max-width:520px){.sgas-title{left:19px}}
+@media (max-width:520px){.sgas{padding:40px 10px 24px}.sgas-tag{font-size:10.5px;padding:2px 8px}}
+
+@media (max-width:860px){
+  .map{grid-template-columns:1fr}
+  .psd{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  .psd h2,.psd .hint{grid-column:1/-1}
+}
+@media (max-width:520px){
+  .level{grid-template-columns:30px minmax(0,1fr);gap:8px}
+  .mis-row{grid-template-columns:26px minmax(0,1fr) 26px;gap:6px}
+  .usr{font-size:9.5px}
+  .tag{font-size:10px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Recuadro de título de los objetivos PSD, separado del bloque (mapa oficial) */
+.psd-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;min-width:0}
+.psd-wrap .psd{width:100%;box-sizing:border-box}
+.psd-head{width:78%;box-sizing:border-box;background:var(--navy);color:#fff;border-radius:8px;padding:12px 10px;text-align:center;font-family:var(--display);font-weight:800;font-size:13px;line-height:1.3}
+.psd-head em{display:block;font-style:normal;font-weight:600;font-size:12px;opacity:.9;margin-top:4px}
+@media (max-width:860px){.psd-head{width:100%}}
+
+/* procesos centrados en su rectángulo blanco */
+.level .box{display:flex;flex-direction:column;justify-content:center}
+.level .box>.grid{width:100%}
+
+/* título del encabezado centrado y más grande */
+.brand{flex-direction:column;align-items:center;text-align:center;gap:6px}
+.brand h1{font-size:clamp(22px,3.4vw,32px);line-height:1.2}
+
+/* Encabezado con logos institucionales a lado y lado */
+.brand-row{display:grid;grid-template-columns:236px minmax(0,1fr) 236px;align-items:center;gap:28px}
+.logo-slot{height:84px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;padding:10px 14px;box-shadow:0 6px 18px rgba(0,0,0,.22)}
+.logo-slot img{max-height:62px;max-width:100%;object-fit:contain;display:block}
+.logo-slot.ph{background:rgba(255,255,255,.1);border:1.5px dashed rgba(255,255,255,.55);box-shadow:none}
+.logo-slot.ph span{font-family:var(--display);font-size:10.5px;font-weight:600;line-height:1.3;color:#fff;text-align:center;opacity:.9}
+@media (max-width:1100px){.brand-row{grid-template-columns:190px minmax(0,1fr) 190px;gap:18px}.logo-slot{height:72px;padding:8px 10px}.logo-slot img{max-height:52px}}
+@media (max-width:760px){
+  .brand-row{grid-template-columns:1fr 1fr;gap:12px}
+  .brand-row .brand{grid-column:1/-1;order:-1}
+  .logo-slot{height:58px}
+  .logo-slot img{max-height:44px}
+}
+
+/* Texto guía pegado a la barra de búsqueda y a todo su ancho */
+.top .tagline{max-width:none;margin:20px 0 -6px;padding-left:4px}
+.top .tagline+.searchbar{margin-top:0}
+
+/* Globito de invitación al asistente: aparece al cargar y se oculta solo */
+.ai-wrap{position:relative;display:flex}
+.ai-bubble{position:absolute;right:0;bottom:calc(100% + 11px);z-index:5;background:#fff;color:#0b2e5c;font-family:var(--display);font-weight:700;font-size:13.5px;padding:7px 8px 7px 9px;border-radius:14px 14px 4px 14px;box-shadow:0 8px 22px rgba(0,0,0,.28);display:flex;align-items:center;gap:8px;white-space:nowrap;cursor:pointer;opacity:0;transform:translateY(8px) scale(.96);transform-origin:bottom right;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.9,.3,1.3);pointer-events:none}
+.ai-bubble.show{opacity:1;transform:none;pointer-events:auto}
+.ai-bubble::after{content:"";position:absolute;right:26px;top:100%;border:8px solid transparent;border-top-color:#fff;border-bottom:0}
+.ai-bubble .dot{width:22px;height:22px;border-radius:50%;background:#f5c518;display:grid;place-items:center;font-size:12px;color:#0b2e5c}
+.ai-bubble .x{border:0;background:none;color:#0b2e5c;opacity:.45;font-size:13px;cursor:pointer;padding:2px 4px;border-radius:6px}
+.ai-bubble .x:hover{opacity:.9;background:#eef2f7}
+@media (max-width:760px){
+  .ai-bubble{bottom:auto;top:calc(100% + 11px);left:0;right:auto;border-radius:4px 14px 14px 14px;transform-origin:top left;transform:translateY(-8px) scale(.96)}
+  .ai-bubble.show{transform:none}
+  .ai-bubble::after{top:auto;bottom:100%;right:auto;left:26px;border-top-color:transparent;border-bottom:8px solid #fff}
+}
+@media (prefers-reduced-motion:reduce){.ai-bubble{transition:none}}
+
+/* Pie de página con autoría */
+.site-foot{background:var(--navy,#004082);color:#fff;margin-top:40px;padding:22px 0 26px;text-align:center;font-size:13px;line-height:1.6}
+.site-foot p{margin:0;opacity:.85}
+.site-foot p strong{font-family:var(--display);font-weight:700;opacity:1;letter-spacing:.01em}
+@media (max-width:760px){.site-foot{padding:20px 16px 22px}}
+
+/* El asistente flotante se detiene antes del pie de página */
+.fab,.ai{bottom:calc(16px + env(safe-area-inset-bottom,0px) + var(--foot-lift,0px))}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand-row">
+      <div class="logo-slot" id="logoCSJ"><img src="img/logo-csj.png" alt="Rama Judicial · Consejo Superior de la Judicatura · República de Colombia"></div>
+      <div class="brand"><small>Rama Judicial · SIGCMA</small><h1>Sistema Integrado de Gestión y Control de la Calidad y del Medio Ambiente</h1></div>
+      <div class="logo-slot" id="logoUDAE"><img src="img/logo-udae.png" alt="Consejo Superior de la Judicatura · Unidad de Desarrollo y Análisis Estadístico (UDAE)"></div>
+    </div>
+    <p class="tagline">Escriba el nombre o código del documento que necesita, o elija un proceso en el mapa para ver la documentación que contiene.</p>
+    <div class="searchbar">
+      <div class="searchbox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" autocomplete="off" placeholder="Ej.: plan de auditoría, F-ESG-08, salidas no conformes…" aria-label="Buscar en los documentos del SIGCMA" aria-controls="results">
+        <kbd>/</kbd>
+        <div class="results" id="results" role="listbox" hidden></div>
+      </div>
+      <button class="btn-ai" id="openAi" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg>Pregúntele al asistente</button>
+    </div>
+    <div class="chips" role="group" aria-label="Filtrar por tipo documental" id="chips"></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="stats" id="stats"><span>Cargando documentos del listado maestro…</span></div>
+    <div style="height:14px"></div>
+    <section class="sgas" aria-label="Sistema de Gestión Antisoborno y Anticorrupción">
+      <button class="sgas-tag" id="sgasTag" type="button" title="Sistema de Gestión Antisoborno: ver preguntas frecuentes">ANTISOBORNO Y ANTICORRUPCIÓN</button>
+      <section class="map" id="map" aria-label="Mapa de procesos">
+      <div class="psd-wrap">
+        <div class="psd-head" role="heading" aria-level="2">OBJETIVOS PSD<br>2023-2026<em>“Hacia una justicia confiable, digital e incluyente”</em></div>
+        <aside class="psd" aria-label="Objetivos del Plan Sectorial de Desarrollo">
+        
+        <div id="objs" style="display:contents"></div>
+        <p class="hint">Toque un objetivo para ver los procesos que lo apalancan. Alineación de ejemplo, por validar.</p>
+      </aside>
+      </div>
+      <div class="levels">
+        <h2 class="sgas-title">SIGCMA MAPA DE PROCESOS</h2>
+        <div class="level lv-est"><div class="tag">Estratégicos</div><div class="box"><div class="grid" id="g-est"></div></div></div>
+        <div class="flow" aria-hidden="true"><svg viewBox="0 0 44 22"><path d="M4 4l18 12L40 4" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></div>
+        <div class="level lv-mis"><div class="tag">Misionales</div>
+          <div class="mis-row"><div class="usr">Usuarios · requisitos</div><div class="box"><div class="grid" id="g-mis"></div></div><div class="usr out" style="writing-mode:vertical-rl">Usuarios · satisfacción</div></div>
+        </div>
+        <div class="flow" aria-hidden="true"><svg viewBox="0 0 44 22"><path d="M4 18L22 6l18 12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></div>
+        <div class="level lv-apo"><div class="tag">Apoyo</div><div class="box"><div class="grid" id="g-apo"></div></div></div>
+        <div class="level lv-eva"><div class="tag">Evaluación y mejora</div><div class="box"><div class="grid" id="g-eva"></div></div></div>
+        <div class="legend">
+          <span><i style="background:var(--est)"></i>Estratégicos: direccionamiento</span>
+          <span><i style="background:var(--mis)"></i>Misionales: servicio de justicia</span>
+          <span><i style="background:var(--apo)"></i>Apoyo: recursos</span>
+          <span><i style="background:var(--eva)"></i>Evaluación y mejora</span>
+        </div>
+        <div class="phva">Ciclo de mejora: <b>Planear</b>→<b>Hacer</b>→<b>Verificar</b>→<b>Actuar</b> <span>· El número en cada proceso indica cuántos documentos tiene.</span></div>
+      </div>
+    </section>
+    </section>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p><strong>Rama Judicial de Colombia · Unidad de Desarrollo y Análisis Estadístico (UDAE)</strong></p>
+    <p>Diseño y desarrollo: JPV · Todos los derechos reservados.</p>
+    <p>© 2026</p>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="panel" id="panel" hidden role="dialog" aria-modal="true" aria-labelledby="p-title">
+  <div class="p-head" id="p-head"><small id="p-level"></small><h2 id="p-title"></h2><button class="close" id="close" aria-label="Cerrar">×</button></div>
+  <div class="p-body" id="p-body"></div>
+</aside>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-labelledby="v-name">
+  <div class="v-bar">
+    <div class="v-title"><b id="v-name"></b><span id="v-meta"></span></div>
+    <div class="v-tools">
+      <button type="button" id="zOut" aria-label="Alejar">−</button><output id="zVal">100%</output><button type="button" id="zIn" aria-label="Acercar">+</button>
+      <button type="button" id="zFit">Ajustar</button>
+      <a id="vOffice" target="_blank" rel="noopener" hidden>Ver original ↗</a>
+      <a id="vDown" class="primary" target="_blank" rel="noopener">Descargar</a>
+      <button type="button" id="vClose" aria-label="Cerrar vista previa">Cerrar ✕</button>
+    </div>
+  </div>
+  <div class="v-stage" id="v-stage"></div>
+</div>
+
+<button class="fab" id="fab" type="button" aria-controls="ai"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Asistente SIGCMA</button>
+
+<section class="ai" id="ai" hidden aria-label="Asistente SIGCMA">
+  <div class="ai-head"><div style="flex:1"><h3>Asistente SIGCMA</h3><p>Responde solo con documentos del sistema y los cita</p></div><button class="close" id="closeAi" style="position:static" aria-label="Cerrar asistente">×</button></div>
+  <div class="ai-log" id="log"></div>
+  <form id="aiForm"><input id="aiq" placeholder="Escriba su pregunta…" aria-label="Pregunta para el asistente" autocomplete="off"><button type="submit">Enviar</button></form>
+  <p class="disc">Modo sin IA: responde con preguntas frecuentes precargadas y busca en los documentos reales del listado maestro. Las respuestas están pendientes de validar por el equipo SIGCMA.</p>
+</section>
+
+<script>
+const PORTAL = "https://www.ramajudicial.gov.co/web/sistema-integrado-gestion-de-la-calidad-y-el-medio-ambiente/";
+const OBJS = [
+  "Ampliar el acceso e infraestructura física",
+  "Consolidar una justicia integrada y soportada en servicios digitales y de tecnología, innovación y análisis de la información",
+  "Aumentar la confianza pública, transparencia y rendición de cuentas",
+  "Fortalecer el talento humano",
+  "Fortalecer la gobernanza, planeación estratégica y capacidad de toma de decisiones"
+];
+const LV = {est:"Proceso estratégico", mis:"Proceso misional", apo:"Proceso de apoyo", eva:"Evaluación y mejora"};
+const GRUPO = {est:"Procesos estratégicos", mis:"Procesos misionales", apo:"Procesos de apoyo", eva:"Evaluación y mejora"};
+const NIVEL = {"Estratégico":"est","Misional":"mis","Apoyo":"apo","Evaluación y mejora":"eva"};
+// Descripción breve (por validar) y alineación de ejemplo con los objetivos del PSD
+const META = {
+ "Planeación Estratégica":["Definir el direccionamiento institucional, los planes y los objetivos estratégicos de la Rama Judicial.",[4,1],"PE"],
+ "Comunicación Institucional":["Divulgar la gestión institucional a servidores, usuarios y partes interesadas.",[2],"CI"],
+ "Gestión para la Integración de Listas de Altas Cortes":["Conformar y remitir las listas de candidatos para las altas cortes con transparencia.",[2,4],"GIL"],
+ "Reordenamiento Judicial":["Ajustar la oferta judicial según la demanda de justicia.",[0,4],"RJ"],
+ "Modernización de la Gestión Judicial":["Implementar modelos de gestión y herramientas que mejoren la prestación del servicio de justicia.",[1],"MGJ"],
+ "Mejoramiento de la Infraestructura Física":["Adecuar y mantener las sedes judiciales para un servicio accesible y seguro.",[0],"MIF"],
+ "Administración de la Carrera Judicial":["Administrar los concursos, el registro y la evaluación de los servidores de carrera.",[3],"ACJ"],
+ "Gestión de la Formación Judicial":["Formar y actualizar a los servidores judiciales a través de la Escuela Judicial.",[3],"GFJ"],
+ "Gestión de la Información Judicial":["Producir y divulgar la información de jurisprudencia, normatividad y relatoría.",[1,2],"GIJ"],
+ "Registro y Control de Abogados y Auxiliares de la Justicia":["Expedir y controlar las tarjetas profesionales y el registro de auxiliares de la justicia.",[2],"RCA"],
+ "Gestión Documental":["Administrar los documentos y archivos desde su producción hasta su disposición final.",[1,2],"GD"],
+ "Gestión Tecnológica":["Proveer y soportar la infraestructura y los servicios tecnológicos.",[1],"GT"],
+ "Gestión de la Información Estadística":["Recolectar, analizar y publicar la estadística judicial para la toma de decisiones.",[1,4],"GIE"],
+ "Gestión Humana":["Gestionar el ciclo de vida laboral de los servidores judiciales.",[3],"GH"],
+ "Gestión de Seguridad y Salud en el Trabajo":["Prevenir accidentes y enfermedades laborales y promover entornos saludables.",[3],"SST"],
+ "Asistencia Legal":["Representar judicialmente a la entidad y emitir conceptos jurídicos.",[4],"AL"],
+ "Administración de la Seguridad":["Proteger a los servidores, usuarios e instalaciones judiciales.",[0],"AS"],
+ "Gestión Financiera y Presupuestal":["Programar, ejecutar y controlar el presupuesto de la Rama Judicial.",[4],"GFP"],
+ "Gestión Administrativa":["Administrar los bienes y servicios generales.",[0],"GA"],
+ "Compras Públicas":["Adelantar los procesos de contratación de bienes y servicios.",[2],"CP"],
+ "Gestión de Control Interno y Auditoría":["Evaluar de forma independiente el sistema de control interno.",[2,4],"CIA"],
+ "Mejoramiento del Sistema Integrado de Gestión y Control de la Calidad y del Medio Ambiente":["Planear, operar, evaluar y mejorar el SIGCMA en todos los niveles.",[4],"ESG"]
+
+
+
+};
+const ORDEN_TIPOS = ["Caracterización","Procedimiento","Formato","Instructivo","Manual","Guía","Protocolo","Ficha de indicador","Programa","Plan","Matriz","Política","Anexo","Otro","Sin tipo"];
+const PLURAL = {"Caracterización":"Caracterizaciones","Procedimiento":"Procedimientos","Formato":"Formatos","Instructivo":"Instructivos","Manual":"Manuales","Guía":"Guías","Protocolo":"Protocolos","Ficha de indicador":"Fichas de indicador","Programa":"Programas","Plan":"Planes","Matriz":"Matrices","Política":"Políticas","Anexo":"Anexos","Otro":"Otros","Sin tipo":"Sin tipo"};
+const CHIPS = ["Caracterización","Procedimiento","Formato","Instructivo","Manual","Guía","Ficha de indicador"];
+let P = [], DOCS = [], TIPOS = [], CORTE = "", OBSOLETOS = 0, SIN_PROCESO = 0;
+async function init(){
+  let data;
+  try{
+    const r = await fetch("datos/documentos.json", {cache:"no-store"});
+    if(!r.ok) throw new Error(r.status);
+    data = await r.json();
+  }catch(e){
+    document.getElementById("stats").innerHTML = `<span>No se pudieron cargar los documentos (datos/documentos.json). Abra el mapa desde su dirección web, no como archivo local.</span>`;
+    return;
+  }
+  CORTE = data.corte || "";
+  P = data.procesos.map((x,i)=>{const m=META[x.proceso]||["",[],""];return {id:"p"+i,nivel:NIVEL[x.nivel]||"apo",nombre:x.proceso,objetivo:m[0],psd:m[1],sigla:m[2],unidad:x.unidad||"",url:x.pagina||PORTAL+"mapa-de-procesos"}});
+  const pid = Object.fromEntries(P.map(p=>[p.nombre,p.id]));
+  data.documentos.forEach((d,i)=>{
+    if(d.estado==="Obsoleto"){OBSOLETOS++;return}
+    if(!pid[d.proceso]){SIN_PROCESO++;return}
+    DOCS.push({id:"d"+i,proc:pid[d.proceso],tipo:d.tipo||"Sin tipo",codigo:d.codigo||"",titulo:(d.nombre||"(Sin nombre registrado)").replace(/\s+/g," ").trim(),
+      version:d.version??"",fecha:d.fecha||"",estado:d.estado||"Por confirmar",publicable:d.publicable||"",enlace:d.enlace||"",cambios:d.cambios||"",vista:d.vista||"",sistema:d.sistema||""});
+  });
+  TIPOS = ORDEN_TIPOS.filter(t=>DOCS.some(d=>d.tipo===t));
+  FAQ.forEach(f=>f.docs=resolverDocs(f.d));
+  renderChips();renderObjs();renderMap();renderStats();
+}
+// Las preguntas frecuentes se escribieron con códigos de ejemplo: aquí se traducen a documentos reales del listado
+const EQUIV = {"F-ESG-02":["F-AAI-02","F-EVAI-03"],"F-ESG-03":["F-EVAI-11"],"F-ESG-04":["F-EVSG-14"],"F-ESG-05":["n:competencias del auditor"],
+ "P-ESG-01":["P-ESG-07"],"F-ESG-01":["F-EVAI-01"],"P-ESG-02":["P-ESG-04","F-ESG-05"],"P-ESG-03":["P-ESG-03","F-ESG-03"],"F-ESG-06":["P-EVSG-13","F-ESG-07"],
+ "F-ESG-08":["F-EVSG-08"],"G-ESG-01":["P-ESG-06","F-EVSG-11"],"M-ESG-01":["C-ESG-01","P-ESG-02"],"F-PE-01":["F-EVSG-10"],"F-PE-03":["F-EVSG-11"],
+ "F-GD-02":["F-AGD-06"],"P-GD-03":["P-AGD-11"],"P-GIE-02":["P-AIE-01"],"G-GIE-01":["P-AIE-02"]};
+function resolverDocs(codes){
+  const out=[];
+  const add=d=>{if(d&&!out.includes(d))out.push(d)};
+  (codes||[]).forEach(c=>{
+    (EQUIV[c]||[c]).forEach(k=>{
+      if(k.startsWith("n:")){add(DOCS.find(d=>norm(d.titulo).includes(norm(k.slice(2)))));return}
+      const real=DOCS.find(d=>d.codigo===k);
+      if(real){add(real);return}
+      const m=k.match(/^([CF])-([A-Z]+)-0[12]$/);
+      if(m){const p=P.find(x=>x.sigla===m[2]);if(!p)return;
+        add(DOCS.find(d=>d.proc===p.id&&d.tipo===(m[1]==="C"?"Caracterización":"Ficha de indicador"))||(m[1]==="F"?DOCS.find(d=>d.proc===p.id&&/ficha de indicador/i.test(d.titulo)):null));}
+    });
+  });
+  return out;
+}
+const byId = id => P.find(p=>p.id===id);
+
+const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const esc = s => s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function hl(text,q){
+  if(!q) return esc(text);
+  const n = norm(text), terms = norm(q).split(/\s+/).filter(t=>t.length>1);
+  const marks = new Array(text.length).fill(false);
+  terms.forEach(t=>{let i=n.indexOf(t);while(i>-1){for(let k=i;k<i+t.length;k++)marks[k]=true;i=n.indexOf(t,i+1);}});
+  let out="",open=false;
+  for(let i=0;i<text.length;i++){if(marks[i]&&!open){out+="<mark>";open=true}if(!marks[i]&&open){out+="</mark>";open=false}out+=esc(text[i])}
+  return out+(open?"</mark>":"");
+}
+
+let filtro = null, objSel = null;
+
+// Construir mapa
+function count(p){return DOCS.filter(d=>d.proc===p.id && (!filtro||d.tipo===filtro)).length}
+function renderMap(){
+  ["est","mis","apo","eva"].forEach(lv=>{
+    const g = document.getElementById("g-"+lv); g.innerHTML="";
+    P.filter(p=>p.nivel===lv).forEach(p=>{
+      const b=document.createElement("button");
+      b.className="proc "+lv; b.type="button"; b.dataset.id=p.id;
+      b.innerHTML=esc(p.nombre)+`<span class="n" aria-label="${count(p)} documentos">${count(p)}</span>`;
+      b.addEventListener("click",()=>openPanel(p.id));
+      g.appendChild(b);
+    });
+  });
+}
+function renderObjs(){
+  const c=document.getElementById("objs");
+  OBJS.forEach((o,i)=>{
+    const b=document.createElement("button");b.className="obj";b.type="button";b.textContent=o;b.setAttribute("aria-pressed","false");
+    b.addEventListener("click",()=>{
+      objSel = objSel===i?null:i;
+      c.querySelectorAll(".obj").forEach((x,k)=>x.setAttribute("aria-pressed",String(k===objSel)));
+      highlight(objSel===null?null:P.filter(p=>p.psd.includes(i)).map(p=>p.id));
+    });
+    c.appendChild(b);
+  });
+}
+function highlight(ids){
+  const map=document.getElementById("map");
+  map.classList.toggle("dim",!!ids);
+  map.querySelectorAll(".proc").forEach(b=>b.classList.toggle("hit",!!ids&&ids.includes(b.dataset.id)));
+}
+function renderChips(){
+  const c=document.getElementById("chips");c.innerHTML="";
+  [null,...CHIPS.filter(t=>TIPOS.includes(t))].forEach(t=>{
+    const b=document.createElement("button");b.className="chip";b.type="button";
+    b.textContent=t?PLURAL[t]:"Todos los tipos";
+    b.setAttribute("aria-pressed",String(filtro===t));
+    b.addEventListener("click",()=>{filtro=t;renderChips();renderMap();search();});
+    c.appendChild(b);
+  });
+}
+function renderStats(){
+  const np=P.length, f=n=>n.toLocaleString("es-CO");
+  document.getElementById("stats").innerHTML=`<span><b>${np}</b> procesos</span><span><b>${f(DOCS.length)}</b> documentos</span><span><b>${f(DOCS.filter(d=>d.tipo==="Formato").length)}</b> formatos</span><span><b>${f(DOCS.filter(d=>d.enlace).length)}</b> con enlace de descarga</span>`;
+}
+
+// Búsqueda
+const qEl=document.getElementById("q"), resEl=document.getElementById("results");
+function score(text,terms){const n=norm(text);let s=0;terms.forEach(t=>{if(n.includes(t))s+=t.length});return s}
+function find(q){
+  const VAC=new Set(["del","los","las","una","uno","para","por","con","que"]);
+  const terms=norm(q).split(/\s+/).filter(t=>t.length>2&&!VAC.has(t));
+  if(!terms.length) return {procs:[],docs:[]};
+  const procs=P.map(p=>({p,s:score(p.nombre+" "+p.objetivo,terms)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.p);
+  const docs=DOCS.filter(d=>!filtro||d.tipo===filtro).map(d=>({d,s:score(d.codigo+" "+d.titulo+" "+d.tipo,terms)*2+score(byId(d.proc).nombre,terms)*.5})).filter(x=>x.s>=Math.max(2,terms.reduce((a,t)=>a+t.length,0)*0.9)||x.s>terms.join("").length*1.5).sort((a,b)=>b.s-a.s).map(x=>x.d);
+  return {procs,docs};
+}
+function search(){
+  const q=qEl.value.trim();
+  if(!q){resEl.hidden=true;if(objSel===null)highlight(null);return}
+  const {procs,docs}=find(q);
+  highlight([...new Set([...procs.map(p=>p.id),...docs.map(d=>d.proc)])]);
+  let h="";
+  if(procs.length){h+="<h4>Procesos</h4>"+procs.slice(0,4).map(p=>`<button class="res" role="option" data-p="${p.id}"><i class="sw" style="background:var(--${p.nivel})"></i><b>${hl(p.nombre,q)}</b><span>${LV[p.nivel]} · ${count(p)} documentos</span></button>`).join("")}
+  if(docs.length){h+=`<h4>Documentos (${docs.length})</h4>`+docs.slice(0,8).map(d=>{const p=byId(d.proc);return `<button class="res" role="option" data-p="${p.id}" data-d="${d.id}"><i class="sw" style="background:var(--${p.nivel})"></i><b>${d.codigo?hl(d.codigo,q)+" · ":""}${hl(d.titulo,q)}</b><span>${d.tipo} · ${esc(p.nombre)}${d.version!==""?" · v"+d.version:""}</span></button>`}).join("")}
+  if(!h)h=`<p class="empty">No hay documentos que coincidan con “${esc(q)}”. Pruebe con otra palabra o pregúntele al asistente.</p>`;
+  resEl.innerHTML=h;resEl.hidden=false;
+  resEl.querySelectorAll(".res").forEach(b=>b.addEventListener("click",()=>{resEl.hidden=true;openPanel(b.dataset.p,b.dataset.d)}));
+}
+qEl.addEventListener("input",search);
+qEl.addEventListener("focus",()=>{if(qEl.value.trim())search()});
+document.addEventListener("click",e=>{if(!e.target.closest(".searchbox"))resEl.hidden=true});
+qEl.addEventListener("keydown",e=>{
+  const items=[...resEl.querySelectorAll(".res")];if(!items.length)return;
+  let i=items.findIndex(x=>x.classList.contains("active"));
+  if(e.key==="ArrowDown"){e.preventDefault();i=Math.min(items.length-1,i+1)}
+  else if(e.key==="ArrowUp"){e.preventDefault();i=Math.max(0,i-1)}
+  else if(e.key==="Enter"){e.preventDefault();(items[i]||items[0]).click();return}
+  else if(e.key==="Escape"){resEl.hidden=true;return}else return;
+  items.forEach((x,k)=>x.classList.toggle("active",k===i));items[i].scrollIntoView({block:"nearest"});
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="/"&&document.activeElement.tagName!=="INPUT"){e.preventDefault();qEl.focus()}
+  if(e.key==="Escape"){closePanel()}
+});
+
+// Panel de proceso
+const panel=document.getElementById("panel"),scrim=document.getElementById("scrim");
+let lastFocus=null;
+function openPanel(pid,did){
+  const p=byId(pid);lastFocus=document.activeElement;
+  document.getElementById("p-head").className="p-head "+p.nivel;
+  document.getElementById("p-level").textContent=LV[p.nivel];
+  document.getElementById("p-title").textContent=p.nombre;
+  const docs=DOCS.filter(d=>d.proc===pid);
+  const tipos=TIPOS.filter(t=>docs.some(d=>d.tipo===t));
+  const sel=did?(docs.find(d=>d.id===did)||{}).tipo:(filtro&&tipos.includes(filtro)?filtro:tipos[0]);
+  const rel=P.filter(x=>x.id!==pid&&x.psd.some(o=>p.psd.includes(o))).slice(0,5);
+  const body=document.getElementById("p-body");
+  body.innerHTML=`
+    <p>${esc(p.objetivo)} <span style="color:var(--muted);font-size:12.5px">(descripción breve, por validar)</span></p>
+    <dl class="facts"><dt>Objetivos PSD</dt><dd>${p.psd.map(i=>esc(OBJS[i])).join("<br>")}<br><span style="color:var(--muted);font-size:12.5px">Alineación de ejemplo</span></dd><dt>Documentos</dt><dd>${docs.length}${docs.some(d=>d.estado==="Vigente")?` (${docs.filter(d=>d.estado==="Vigente").length} confirmados como vigentes)`:" · estado por confirmar"}</dd><dt>Portal oficial</dt><dd><a href="${p.url}" target="_blank" rel="noopener">Abrir página del proceso ↗</a></dd></dl>
+    ${docs.length?"":`<p class="loading">Este proceso todavía no tiene documentos registrados en el listado maestro.</p>`}
+    <div><div class="tabs" role="tablist">${tipos.map(t=>`<button class="tab" role="tab" data-t="${t}" aria-selected="${t===sel}">${t}<span class="c">${docs.filter(d=>d.tipo===t).length}</span></button>`).join("")}</div><div id="doclist"></div></div>
+    <div id="prev"></div>
+    ${rel.length?`<div><h3 style="font-size:13px;margin-bottom:8px">Procesos relacionados</h3><div class="rel">${rel.map(r=>`<button data-p="${r.id}">${esc(r.nombre)}</button>`).join("")}</div></div>`:""}`;
+  const showTab=t=>{
+    body.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===t)));
+    document.getElementById("doclist").innerHTML=docs.filter(d=>d.tipo===t).map(d=>`
+      <div class="doc"><div><code>${d.codigo||"Sin código"}</code> <span class="pill ${d.estado==="Vigente"?"":"rev"}">${d.estado}</span></div>
+      <div class="acts"><button type="button" data-v="${d.id}">Vista previa</button><a href="${d.enlace||p.url}" target="_blank" rel="noopener">${d.enlace?"Descargar":"Ver en el portal"}</a></div>
+      <div class="t"><button type="button" data-v="${d.id}">${esc(d.titulo)}</button></div><div class="meta"><span>${d.version!==""?"Versión "+d.version:"Sin versión registrada"}</span><span>${d.fecha?"Aprobado "+d.fecha:"Sin fecha registrada"}</span>${d.sistema?`<span>${esc(d.sistema)}</span>`:""}</div></div>`).join("");
+    body.querySelectorAll("[data-v]").forEach(b=>b.addEventListener("click",()=>preview(docs.find(d=>d.id===b.dataset.v),p)));
+  };
+  body.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.t)));
+  body.querySelectorAll(".rel button").forEach(b=>b.addEventListener("click",()=>openPanel(b.dataset.p)));
+  if(sel)showTab(sel);
+  if(did){const d=docs.find(x=>x.id===did);if(d)preview(d,p)}
+  panel.hidden=false;scrim.hidden=false;
+  document.getElementById("close").focus();
+}
+// Visor de documentos
+const viewer=document.getElementById("viewer"),stage=document.getElementById("v-stage");
+let zoom=1,vFocus=null;
+const ICON=`<svg viewBox="0 0 32 32" fill="none" stroke="#004082" stroke-width="1.8" aria-hidden="true"><path d="M16 4v22M9 26h14M6 9h20"/><path d="M6 9l-4 8h8zM26 9l-4 8h8z"/><path d="M2 17a4 2 0 0 0 8 0M22 17a4 2 0 0 0 8 0"/></svg>`;
+const dash=v=>(v===""||v==null)?"—":esc(String(v));
+function hdr(d){return `<table class="hdr"><tr><td class="logo" rowspan="3">${ICON}RAMA JUDICIAL<small>Consejo Superior de la Judicatura · SIGCMA</small></td><td class="tt" rowspan="3">${esc(d.tipo.toUpperCase())}<b>${esc(d.titulo.toUpperCase())}</b></td><td class="meta">Código: <b>${dash(d.codigo)}</b></td></tr><tr><td class="meta">Versión: ${dash(d.version)}</td></tr><tr><td class="meta">Fecha: ${dash(d.fecha)}</td></tr></table>`}
+function ficha(d,p){
+  const link=d.enlace||p.url;
+  return `${hdr(d)}
+    <div class="pend">${d.vista?`<b>Vista previa disponible</b><a href="${d.vista}" target="_blank" rel="noopener">Abrir el documento en PDF ↗</a>`:`<b>Vista previa pendiente</b>Este documento aún no tiene su PDF de vista previa. Cuando el equipo SIGCMA cargue el archivo, aquí se verá el documento real.`}</div>
+    <h5>FICHA DEL DOCUMENTO (LISTADO MAESTRO)</h5>
+    <table>
+      <tr><th style="width:32%">Proceso</th><td>${esc(p.nombre)}</td></tr>
+      <tr><th>Nivel</th><td>${LV[p.nivel]}</td></tr>
+      <tr><th>Tipo documental</th><td>${esc(d.tipo)}</td></tr>${d.sistema?`<tr><th>Sistema de gestión</th><td>${esc(d.sistema)}</td></tr>`:""}
+      <tr><th>Código</th><td>${dash(d.codigo)}</td></tr>
+      <tr><th>Versión vigente</th><td>${dash(d.version)}</td></tr>
+      <tr><th>Fecha de aprobación</th><td>${dash(d.fecha)}</td></tr>
+      <tr><th>Estado</th><td>${esc(d.estado)}</td></tr>
+      <tr><th>Último cambio</th><td>${dash(d.cambios)}</td></tr>
+      <tr><th>${d.enlace?"Descarga":"Ubicación en el portal"}</th><td><a href="${link}" target="_blank" rel="noopener">${d.enlace?"Descargar el archivo original ↗":"Página del proceso ↗"}</a></td></tr>
+    </table>
+    <div class="pfoot"><span>${d.codigo?esc(d.codigo)+" · ":""}${d.version!==""?"Versión "+esc(String(d.version))+" · ":""}${esc(d.estado)}</span><span>Listado maestro · corte ${CORTE}</span></div>`;
+}
+function setZoom(z){zoom=Math.max(.4,Math.min(2,Math.round(z*100)/100));stage.querySelectorAll(".page").forEach(pg=>pg.style.setProperty("--z",zoom));document.getElementById("zVal").textContent=Math.round(zoom*100)+"%"}
+const fit=()=>setZoom(Math.min(1,(stage.clientWidth-32)/794));
+function openViewer(d,p){
+  vFocus=document.activeElement;
+  document.getElementById("v-name").textContent=`${d.codigo?d.codigo+" · ":""}${d.titulo}`;
+  document.getElementById("v-meta").textContent=`${d.tipo} · ${p.nombre}${d.version!==""?" · Versión "+d.version:""} · ${d.estado}`;
+  stage.innerHTML=`<article class="page" aria-label="Ficha del documento">${ficha(d,p)}</article>`+
+    `<p class="v-note">Datos tomados del listado maestro de documentos. La vista previa del documento real se habilitará cuando se carguen los PDF.</p>`;
+  const dn=document.getElementById("vDown");dn.href=d.enlace||p.url;dn.textContent=d.enlace?"Descargar":"Ver en el portal";
+  document.getElementById("vOffice").hidden=true;
+  viewer.hidden=false;stage.scrollTop=0;fit();
+  document.getElementById("vClose").focus();
+}
+function closeViewer(){if(viewer.hidden)return false;viewer.hidden=true;if(vFocus)vFocus.focus();return true}
+document.getElementById("vClose").addEventListener("click",closeViewer);
+document.getElementById("zIn").addEventListener("click",()=>setZoom(zoom+.1));
+document.getElementById("zOut").addEventListener("click",()=>setZoom(zoom-.1));
+document.getElementById("zFit").addEventListener("click",fit);
+window.addEventListener("resize",()=>{if(!viewer.hidden)fit()});
+const preview=(d,p)=>openViewer(d,p);
+function closePanel(){if(closeViewer())return;if(panel.hidden)return;panel.hidden=true;scrim.hidden=true;if(lastFocus)lastFocus.focus()}
+document.getElementById("close").addEventListener("click",closePanel);
+scrim.addEventListener("click",closePanel);
+
+// Asistente (demostración local)
+const ai=document.getElementById("ai"),log=document.getElementById("log");
+function say(html,who){const m=document.createElement("div");m.className="msg "+who;m.innerHTML=html;log.appendChild(m);log.scrollTop=log.scrollHeight;return m}
+// Banco de preguntas frecuentes (sin IA). En producción vive en una tabla de Supabase que el equipo SIGCMA edita.
+const FAQ = [
+ ["General","¿Qué es el SIGCMA?","sistema integrado gestion calidad medio ambiente sigcma que es","Es el Sistema Integrado de Gestión y Control de la Calidad y del Medio Ambiente de la Rama Judicial. Articula la gestión de calidad, la gestión ambiental y la mejora continua para prestar un mejor servicio de justicia.",["M-ESG-01","C-ESG-01"]],
+ ["General","¿Qué normas aplica el SIGCMA?","normas norma iso 9001 14001 ntc 6256 requisitos","Se basa en la NTC ISO 9001:2015 (calidad), la NTC ISO 14001:2015 (ambiental) y la NTC 6256:2018, la norma de calidad para la gestión judicial, junto con la normatividad interna del Consejo Superior de la Judicatura.",["M-ESG-01"]],
+ ["General","¿Qué es el ciclo PHVA?","phva ciclo planear hacer verificar actuar deming","Planear, Hacer, Verificar y Actuar. Es la base de la mejora continua: cada caracterización organiza sus actividades en esas cuatro fases.",["C-ESG-01"]],
+ ["General","¿Cómo está organizado el mapa de procesos?","mapa procesos niveles estrategicos misionales apoyo evaluacion organizado","Tiene 22 procesos en cuatro niveles: 3 estratégicos, 7 misionales, 10 de apoyo y 2 de evaluación y mejora, alineados con los objetivos del Plan Sectorial de Desarrollo 2023-2026.",[]],
+ ["General","¿Cuáles son los objetivos del Plan Sectorial de Desarrollo?","objetivos plan sectorial desarrollo psd 2023 2026","Son cinco: "+OBJS.join("; ")+". Toque un objetivo en el mapa para ver los procesos que lo apalancan.",[]],
+ ["Documentos","¿Qué es una caracterización?","caracterizacion que es contiene proceso","Es el documento que describe un proceso: objetivo, alcance, proveedores, entradas, actividades por fase PHVA, salidas, usuarios, documentos, riesgos e indicadores. Cada proceso tiene una.",["C-ESG-01"]],
+ ["Documentos","¿Qué diferencia hay entre procedimiento, formato y guía?","diferencia procedimiento formato guia manual instructivo tipos documentos","El procedimiento dice qué pasos seguir y quién los hace. El formato es la plantilla donde se registra la evidencia. La guía o el manual orientan y explican criterios, sin ser pasos obligatorios.",["P-ESG-01","F-ESG-02","G-ESG-01"]],
+ ["Documentos","¿Cómo sé si un documento está vigente?","vigente vigencia version actualizado obsoleto ultima","Revise el estado y la versión que aparecen junto a cada documento en este mapa. Use siempre la versión publicada aquí y no copias guardadas en su equipo, porque pueden estar desactualizadas.",["M-ESG-01"]],
+ ["Documentos","¿Cómo solicito crear o actualizar un documento?","solicitar crear actualizar modificar documento nuevo cambio","Comuníquese con el líder del proceso dueño del documento. El control de la información documentada (elaboración, revisión, aprobación y publicación) está descrito en el Manual del SIGCMA.",["M-ESG-01"]],
+ ["Auditorías","¿Qué formato uso para el plan de auditoría?","plan auditoria formato plantilla planear auditar","Use el formato Plan de auditoría. Si está organizando el ciclo completo, el Programa de auditorías internas reúne fechas, procesos y equipo auditor.",["F-ESG-02","F-ESG-01"]],
+ ["Auditorías","¿Dónde está el formato del informe de auditoría?","informe auditoria formato resultados hallazgos","El Informe de auditoría registra hallazgos, fortalezas y oportunidades de mejora del proceso auditado.",["F-ESG-03"]],
+ ["Auditorías","¿Hay una lista de verificación para auditorías?","lista verificacion chequeo checklist auditoria requisitos","Durante la auditoría, las evidencias y verificaciones se registran en el formato de notas de auditor del SIGCMA, a partir de los requisitos de la norma y del proceso auditado.",["F-ESG-04"]],
+ ["Auditorías","¿Cómo se evalúa a los auditores internos?","evaluacion evaluar auditores internos competencias","Las competencias esperadas del auditor interno están descritas en el anexo de competencias del auditor interno del SIGCMA, que sirve de referencia para evaluarlos y fortalecerlos.",["F-ESG-05"]],
+ ["Auditorías","¿Cuál es el procedimiento de auditorías internas?","procedimiento auditorias internas pasos auditar","El procedimiento Auditorías internas de calidad describe desde el programa anual hasta el informe y el seguimiento.",["P-ESG-01"]],
+ ["Mejora","¿Qué es una salida no conforme y cómo se trata?","salida no conforme producto servicio incumple tratamiento","Es un producto o servicio que no cumple los requisitos. Se identifica, se registra y se corrige antes de entregarlo; el procedimiento explica cómo controlarla.",["P-ESG-03"]],
+ ["Mejora","¿Qué diferencia hay entre acción correctiva y acción de mejora?","accion correctiva mejora diferencia no conformidad causa","La acción correctiva elimina la causa de una no conformidad que ya ocurrió para que no se repita. La acción de mejora aprovecha una oportunidad aunque no haya un problema.",["P-ESG-02"]],
+ ["Mejora","¿Qué es la revisión por la dirección?","revision direccion informe alta direccion","Es la evaluación periódica que hace la alta dirección del desempeño del SIGCMA para decidir mejoras. Se documenta en el Informe de revisión por la dirección.",["F-ESG-06"]],
+ ["Riesgos e indicadores","¿Cómo identifico los riesgos de mi proceso?","riesgos identificar oportunidades matriz mapa gestion","Siga la Guía para la gestión de riesgos y oportunidades y registre el resultado en la matriz de riesgos de su proceso.",["G-ESG-01","F-PE-03"]],
+ ["Riesgos e indicadores","¿Dónde está la ficha de indicadores?","ficha indicador indicadores medir medicion","Cada proceso tiene su ficha de indicadores. Abra el proceso en el mapa y vaya a la pestaña Ficha de indicador, o pida «las fichas de indicadores de todos los procesos».",["F-PE-02"]],
+ ["Planeación","¿Dónde encuentro el plan de acción de un proceso?","plan accion proceso actividades anual","El formato del plan de acción del SIGCMA está en el proceso de Mejoramiento del SIGCMA.",["F-PE-01"]],
+ ["Comunicación","¿Dónde está la matriz de comunicación?","matriz comunicacion comunicar que quien cuando","La Matriz de comunicación define qué se comunica, a quién, cuándo y por qué medio.",["F-ESG-08"]],
+ ["Gestión documental","¿Qué es la tabla de retención documental?","tabla retencion documental trd archivo tiempos","Es el instrumento que indica cuánto tiempo se conserva cada tipo de documento y cuál es su disposición final.",["F-GD-02"]],
+ ["Gestión documental","¿Cómo hago una transferencia documental?","transferencia documental archivo enviar archivo central","Siga el procedimiento de Transferencias documentales del proceso de Gestión Documental.",["P-GD-03"]],
+ ["Estadística","¿Cómo reporto la estadística de mi despacho?","reportar estadistica despacho sierju reporte datos","El reporte se hace en el aplicativo SIERJU. El procedimiento y la guía de reporte explican plazos y pasos.",["P-GIE-02","G-GIE-01"]],
+ ["Norma ISO 9001","¿Qué es el contexto de la organización?","contexto organizacion cuestiones internas externas dofa","Es el análisis de las cuestiones internas y externas que afectan la capacidad de la Rama Judicial para lograr sus resultados. Es el punto de partida de la planificación del sistema.",["C-PE-01"]],
+ ["Norma ISO 9001","¿Qué son las partes interesadas?","partes interesadas grupos valor ciudadanos usuarios","Son las personas u organizaciones que pueden afectar o verse afectadas por el servicio de justicia: ciudadanos, servidores judiciales, abogados, entidades del Estado y entes de control, entre otros.",["C-PE-01"]],
+ ["Norma ISO 9001","¿Qué es la política de calidad?","politica calidad compromiso direccion","Es el compromiso de la alta dirección con la calidad del servicio y la mejora continua. Orienta los objetivos del sistema y está publicada en el Manual del SIGCMA.",["M-ESG-01"]],
+ ["Norma ISO 9001","¿Qué son los objetivos de calidad?","objetivos calidad metas sistema medibles","Son metas medibles, coherentes con la política de calidad, que el sistema se compromete a alcanzar. Se siguen con indicadores y planes de acción.",["M-ESG-01","F-PE-01"]],
+ ["Norma ISO 9001","¿Qué es la información documentada?","informacion documentada registros evidencia","Es la información que el sistema debe controlar y mantener: documentos que dicen cómo hacer las cosas (procedimientos, guías) y registros que prueban que se hicieron (formatos diligenciados).",["M-ESG-01"]],
+ ["Norma ISO 9001","¿Qué es una no conformidad?","no conformidad incumplimiento requisito","Es el incumplimiento de un requisito de la norma, de un procedimiento, de la ley o del usuario. Toda no conformidad requiere corrección y análisis de causas.",["P-ESG-02"]],
+ ["Norma ISO 9001","¿Qué es el pensamiento basado en riesgos?","pensamiento enfoque basado riesgos prevenir","Es anticipar lo que puede salir mal (o mejor) en cada proceso y actuar antes de que ocurra, en lugar de reaccionar después.",["G-ESG-01"]],
+ ["Norma ISO 9001","¿Qué es la mejora continua?","mejora continua permanente ciclo","Es la actividad permanente de aumentar el desempeño del sistema: se mide, se analiza, se corrige y se vuelve a medir, siguiendo el ciclo PHVA.",["P-ESG-02"]],
+ ["Norma ISO 9001","¿Qué es el alcance del SIGCMA?","alcance sistema sedes certificadas cobertura","Define qué procesos y sedes cubre el sistema de gestión. Está descrito en el Manual del SIGCMA.",["M-ESG-01"]],
+ ["Norma ISO 9001","¿Qué diferencia hay entre eficacia y eficiencia?","eficacia eficiencia efectividad diferencia","Eficacia es lograr el resultado planeado. Eficiencia es lograrlo con el menor uso de recursos. Los indicadores de cada proceso miden una u otra.",["F-PE-02"]],
+ ["Auditorías","¿Qué es una auditoría interna?","auditoria interna que es objetivo","Es una revisión sistemática e independiente que hace la propia entidad para verificar si los procesos cumplen los requisitos y si el sistema es eficaz.",["P-ESG-01"]],
+ ["Auditorías","¿Qué es un hallazgo de auditoría?","hallazgo auditoria resultado encontrado","Es el resultado de comparar la evidencia con los criterios de auditoría. Puede ser una no conformidad, una observación o una fortaleza.",["F-ESG-03"]],
+ ["Auditorías","¿Qué diferencia hay entre no conformidad y observación?","no conformidad observacion diferencia auditoria","La no conformidad es un incumplimiento demostrado con evidencia. La observación señala una situación que, si no se atiende, podría convertirse en incumplimiento.",["F-ESG-03"]],
+ ["Auditorías","¿Qué es una fortaleza en una auditoría?","fortaleza auditoria buena practica","Es una práctica destacada que el equipo auditor reconoce porque supera lo exigido y puede replicarse en otras sedes.",["F-ESG-03"]],
+ ["Auditorías","¿Cómo me preparo si van a auditar mi proceso?","preparar preparo auditado auditaran recibir auditoria","Revise el plan de auditoría que le enviaron, tenga a mano los registros recientes de su proceso (formatos, indicadores, riesgos y acciones) y repase la lista de verificación.",["F-ESG-02","F-ESG-04"]],
+ ["Auditorías","¿Qué son la reunión de apertura y la de cierre?","reunion apertura cierre auditoria","En la apertura el equipo auditor presenta objetivo, alcance y agenda. En el cierre comunica los hallazgos y los siguientes pasos.",["P-ESG-01"]],
+ ["Auditorías","¿Quién puede ser auditor interno?","quien auditor interno requisitos formacion","Un servidor formado en auditoría y en la norma, que no audite su propio trabajo. Su desempeño se evalúa después de cada ciclo.",["F-ESG-05"]],
+ ["Auditorías","¿Qué es una auditoría externa o de certificación?","auditoria externa certificacion ente certificador icontec","La realiza un organismo independiente para certificar que el sistema cumple la norma. Se prepara igual que una auditoría interna.",["M-ESG-01"]],
+ ["Auditorías","¿Qué es el programa anual de auditorías?","programa anual auditorias cronograma vigencia","Es la planificación de todas las auditorías del año: qué procesos y sedes se auditan, cuándo y con qué equipo.",["F-ESG-01"]],
+ ["Auditorías","¿Qué hago después de recibir el informe de auditoría?","despues informe auditoria plazo acciones formular","Analice las causas de cada no conformidad y formule las acciones correctivas en los plazos que fija el procedimiento de acciones correctivas y de mejora.",["P-ESG-02","F-ESG-03"]],
+ ["Mejora","¿Cómo formulo un plan de mejoramiento?","formular plan mejoramiento acciones","Describa el hallazgo, analice la causa raíz, defina acciones con responsable y fecha, y establezca cómo verificará que la acción fue eficaz.",["P-ESG-02"]],
+ ["Mejora","¿Qué es el análisis de causa raíz?","analisis causa raiz origen problema","Es identificar el origen real de un problema, no solo su síntoma, para que la acción correctiva evite que se repita.",["P-ESG-02"]],
+ ["Mejora","¿Qué es la técnica de los cinco porqués?","cinco porques tecnica causa","Consiste en preguntar por qué ocurrió el problema y repetir la pregunta sobre cada respuesta, por lo general unas cinco veces, hasta llegar a la causa de fondo.",["P-ESG-02"]],
+ ["Mejora","¿Qué es una corrección?","correccion inmediata arreglar","Es la acción inmediata para eliminar el problema detectado, por ejemplo corregir un documento mal diligenciado. No elimina la causa; para eso está la acción correctiva.",["P-ESG-03","P-ESG-02"]],
+ ["Mejora","¿Cómo se cierra una acción correctiva?","cerrar cierre accion correctiva eficacia","Cuando se ejecutaron todas las actividades y se verificó que el problema no volvió a presentarse.",["P-ESG-02"]],
+ ["Mejora","¿Qué es una oportunidad de mejora?","oportunidad mejora sugerencia","Es una situación que, sin ser un incumplimiento, puede hacerse mejor. Se gestiona como acción de mejora.",["P-ESG-02"]],
+ ["Riesgos e indicadores","¿Qué es un riesgo?","riesgo que es definicion","Es la posibilidad de que ocurra un evento que afecte el logro de los objetivos del proceso.",["G-ESG-01"]],
+ ["Riesgos e indicadores","¿Qué es una oportunidad en el SIGCMA?","oportunidad definicion positiva","Es una situación favorable que, si se aprovecha, mejora los resultados del proceso. Se identifica junto con los riesgos.",["G-ESG-01"]],
+ ["Riesgos e indicadores","¿Qué es un control de riesgo?","control riesgo mitigar","Es la medida que reduce la probabilidad o el impacto de un riesgo, por ejemplo una revisión previa o una lista de chequeo.",["G-ESG-01"]],
+ ["Riesgos e indicadores","¿Cómo se valora un riesgo?","valorar valoracion probabilidad impacto calificar","Se califica su probabilidad y su impacto. La combinación indica el nivel de riesgo y define qué tan fuertes deben ser los controles.",["G-ESG-01"]],
+ ["Riesgos e indicadores","¿Cada cuánto se hace seguimiento a los riesgos?","seguimiento riesgos periodicidad frecuencia","Con la periodicidad que defina la guía de riesgos y el plan del proceso. Además se revisan cuando cambia el contexto o aparece un hallazgo.",["G-ESG-01","F-PE-03"]],
+ ["Riesgos e indicadores","¿Qué es un indicador de gestión?","indicador gestion que es medir","Es una medida que muestra si el proceso logra sus resultados. Tiene fórmula, meta, frecuencia de medición y responsable.",["F-PE-02"]],
+ ["Riesgos e indicadores","¿Qué hago si un indicador no cumple la meta?","indicador no cumple meta incumplimiento","Analice por qué no se cumplió y, si es necesario, formule una acción correctiva o de mejora.",["F-PE-02","P-ESG-02"]],
+ ["Riesgos e indicadores","¿Qué es la meta de un indicador?","meta indicador valor esperado","Es el valor que se espera alcanzar en el periodo. Permite saber si el resultado es satisfactorio.",["F-PE-02"]],
+ ["Documentos","¿Qué es el listado maestro de documentos?","listado maestro documentos inventario","Es el inventario oficial de los documentos del sistema con su código, versión y fecha. Sirve para saber cuál es la versión vigente.",["M-ESG-01"]],
+ ["Documentos","¿Qué es un documento obsoleto?","documento obsoleto reemplazado anterior","Es una versión que fue reemplazada y ya no debe usarse. Se conserva solo como histórico.",["M-ESG-01"]],
+ ["Documentos","¿Qué es un documento externo?","documento externo normas leyes origen externo","Es un documento que no elabora la entidad pero que el sistema usa, como leyes, normas técnicas o acuerdos.",["M-ESG-01"]],
+ ["Documentos","¿Qué es el control de cambios de un documento?","control cambios historial versiones","Es la tabla al final de cada documento que registra qué cambió en cada versión y cuándo.",["M-ESG-01"]],
+ ["Documentos","¿Cómo leo el código de un documento?","codigo documento leer significado sigla","La primera letra indica el tipo (C caracterización, P procedimiento, F formato, G guía, M manual), luego va la sigla del proceso y un consecutivo. Por ejemplo, F-ESG-02 es un formato del proceso de Mejoramiento del SIGCMA.",["F-ESG-02"]],
+ ["Documentos","¿Puedo modificar un formato descargado?","modificar cambiar formato descargado editar estructura","Puede diligenciarlo, pero no cambiar su estructura ni su código. Si el formato necesita ajustes, solicítelo al líder del proceso.",["M-ESG-01"]],
+ ["Planeación","¿Qué es el Plan Sectorial de Desarrollo?","plan sectorial desarrollo psd que es","Es el plan de la Rama Judicial para 2023-2026, con el lema Hacia una justicia confiable, digital e incluyente. Los procesos del SIGCMA se alinean con sus objetivos.",["C-PE-01"]],
+ ["Planeación","¿Qué hace el proceso de Planeación Estratégica?","planeacion estrategica proceso hace","Define el direccionamiento institucional, los planes y los objetivos estratégicos, y les hace seguimiento.",["C-PE-01"]],
+ ["Planeación","¿Cómo se hace seguimiento al plan de acción?","seguimiento plan accion avance","El líder del proceso reporta el avance de cada actividad en el formato del plan de acción con la periodicidad definida.",["F-PE-01","P-PE-01"]],
+ ["Planeación","¿Qué es el plan del SIGCMA?","plan sigcma anual nivel central","Es la planificación anual del sistema que se elabora en el nivel central y se comunica a las seccionales.",["C-ESG-01"]],
+ ["Planeación","¿Qué es el Comité Nacional del SIGCMA?","comite nacional sigcma instancia aprueba","Es la instancia que orienta el sistema y aprueba sus documentos principales, como el mapa de procesos y las caracterizaciones.",["M-ESG-01"]],
+ ["Planeación","¿Qué es la rendición de cuentas?","rendicion cuentas informar resultados ciudadania","Es el ejercicio de informar a la ciudadanía sobre la gestión y los resultados de la entidad, y recibir sus opiniones.",["C-PE-01"]],
+ ["Comunicación","¿Cómo se comunica el SIGCMA a los servidores?","comunica sigcma servidores divulgar canales","Por el portal web, los micrositios, el correo institucional y las jornadas de capacitación, según lo definido en la matriz de comunicación.",["F-ESG-08","C-CI-01"]],
+ ["Comunicación","¿Dónde se publican las novedades del sistema?","novedades publican noticias micrositio portal","En el micrositio del SIGCMA en el portal de la Rama Judicial. Este mapa también puede mostrar los documentos recién actualizados.",["C-CI-01"]],
+ ["Comunicación","¿Qué diferencia hay entre comunicación interna y externa?","comunicacion interna externa diferencia","La interna va dirigida a los servidores judiciales; la externa, a ciudadanos y partes interesadas. Ambas se planifican en la matriz de comunicación.",["F-ESG-08"]],
+ ["Gestión ambiental","¿Qué es la gestión ambiental en la Rama Judicial?","gestion ambiental rama 14001","Es el componente del SIGCMA que controla los efectos de la operación judicial sobre el ambiente, con base en la NTC ISO 14001.",["M-ESG-01"]],
+ ["Gestión ambiental","¿Qué es un aspecto ambiental?","aspecto ambiental consumo","Es un elemento de las actividades que interactúa con el ambiente, como el consumo de papel, agua o energía, o la generación de residuos.",["M-ESG-01"]],
+ ["Gestión ambiental","¿Qué es un impacto ambiental?","impacto ambiental cambio efecto","Es el cambio que un aspecto ambiental produce en el ambiente, por ejemplo la contaminación por residuos mal dispuestos.",["M-ESG-01"]],
+ ["Gestión ambiental","¿Qué es el Plan de Gestión Ambiental de la Rama Judicial?","plan gestion ambiental acuerdo 10160","Es el plan adoptado por el Acuerdo 10160 de 2014, que fija los programas ambientales de la Rama Judicial.",["M-ESG-01"]],
+ ["Gestión ambiental","¿Cómo separo los residuos en mi sede?","separar residuos reciclaje canecas colores","Use los puntos ecológicos: bolsa blanca para aprovechables (papel, plástico, vidrio, metal), negra para no aprovechables y verde para orgánicos.",["C-GA-01"]],
+ ["Gestión ambiental","¿Qué hago con pilas, tóner o residuos peligrosos?","pilas toner residuos peligrosos raee","No los mezcle con la basura común. Entréguelos en los puntos de recolección de su sede para que los recoja un gestor autorizado.",["C-GA-01"]],
+ ["Gestión ambiental","¿Cómo ahorro papel, agua y energía?","ahorro papel agua energia consumo","Prefiera los documentos digitales, imprima solo lo necesario y a doble cara, apague equipos y luces al salir y reporte fugas de agua.",["C-GA-01"]],
+ ["Gestión ambiental","¿Qué son las compras sostenibles?","compras sostenibles verdes criterios ambientales","Son adquisiciones que incluyen criterios ambientales y sociales desde la compra hasta la disposición final del bien.",["C-CP-01"]],
+ ["Atención al usuario","¿Cómo presenta un ciudadano una PQRSD?","pqrsd peticion queja reclamo sugerencia denuncia","Por los canales de atención publicados en el portal de la Rama Judicial. Las PQRSD alimentan la mejora del servicio.",["C-CI-01"]],
+ ["Atención al usuario","¿Cómo se mide la satisfacción del usuario?","satisfaccion usuario encuesta medir","Con encuestas y con el análisis de quejas y felicitaciones. Sus resultados se presentan en la revisión por la dirección.",["F-ESG-06"]],
+ ["Atención al usuario","¿Qué es un requisito del usuario?","requisito usuario necesidad expectativa","Es una necesidad o expectativa del usuario sobre el servicio, como oportunidad, claridad o accesibilidad. El mapa los muestra como entrada y salida de los procesos misionales.",["C-ESG-01"]],
+ ["Atención al usuario","¿Qué es la Ley de Transparencia?","ley transparencia 1712 acceso informacion publica","Es la Ley 1712 de 2014, que garantiza el derecho de acceso a la información pública. Por eso los documentos públicos del SIGCMA se pueden consultar sin restricción.",["C-CI-01"]],
+ ["Gestión documental","¿Qué es el archivo de gestión?","archivo gestion oficina tramite","Es el archivo de la dependencia con los documentos en trámite o de consulta frecuente, antes de transferirlos al archivo central.",["F-GD-02"]],
+ ["Gestión documental","¿Qué es la disposición final de los documentos?","disposicion final conservacion eliminacion seleccion","Es la decisión, fijada en la tabla de retención, de conservar, seleccionar o eliminar un documento cuando cumple su tiempo de retención.",["F-GD-02"]],
+ ["Gestión documental","¿Qué es el expediente electrónico?","expediente electronico digital","Es el conjunto de documentos electrónicos de un trámite, organizado con sus metadatos para garantizar su integridad y consulta.",["C-GD-01"]],
+ ["Gestión documental","¿Cómo organizo los documentos de mi dependencia?","organizar documentos dependencia archivo carpetas","Clasifíquelos según la tabla de retención documental, ordénelos cronológicamente en cada expediente y rotule carpetas y cajas.",["F-GD-02","C-GD-01"]],
+ ["Estadística","¿Qué es el SIERJU?","sierju sistema informacion estadistica","Es el Sistema de Información Estadística de la Rama Judicial, donde los despachos reportan su movimiento de procesos.",["P-GIE-02"]],
+ ["Estadística","¿Para qué se usa la estadística judicial?","estadistica judicial uso decisiones","Para tomar decisiones sobre la oferta judicial, medir la gestión de los despachos y rendir cuentas.",["C-GIE-01"]],
+ ["Estadística","¿Qué indicadores de gestión judicial existen?","indicadores gestion judicial congestion evacuacion","Entre los más usados están el índice de evacuación parcial y el índice de congestión, que comparan los procesos que ingresan, salen y quedan en trámite.",["G-GIE-01"]],
+ ["Estadística","¿Qué hago si cometí un error en el reporte estadístico?","error reporte estadistico corregir","Comuníquese con el área de estadística de su seccional para solicitar la corrección según el procedimiento de recolección.",["P-GIE-02"]],
+ ["Talento humano","¿Dónde consulto información sobre la carrera judicial?","carrera judicial concursos convocatoria","En el proceso de Administración de la Carrera Judicial, que administra los concursos y el registro de los servidores de carrera.",["C-ACJ-01"]],
+ ["Talento humano","¿Cómo accedo a capacitaciones de la Escuela Judicial?","capacitacion escuela judicial rodrigo lara bonilla formacion","A través del proceso de Gestión de la Formación Judicial, que coordina la Escuela Judicial Rodrigo Lara Bonilla.",["C-GFJ-01"]],
+ ["Talento humano","¿Qué es la inducción y la reinducción?","induccion reinduccion nuevo servidor","La inducción presenta la entidad al servidor que ingresa; la reinducción actualiza a los servidores sobre cambios relevantes, incluido el SIGCMA.",["C-GH-01"]],
+ ["Talento humano","¿Qué es la evaluación de desempeño?","evaluacion desempeno calificacion servicios","Es la valoración periódica del trabajo del servidor frente a lo esperado. En la carrera judicial se conoce como calificación de servicios.",["C-ACJ-01"]],
+ ["Talento humano","¿Qué es la competencia de un servidor en el SIGCMA?","competencia servidor educacion formacion experiencia","Es la capacidad de aplicar conocimientos y habilidades. La norma exige asegurarla con educación, formación o experiencia.",["C-GH-01"]],
+ ["Seguridad y salud en el trabajo","¿Qué es el SG-SST?","sg sst sistema gestion seguridad salud trabajo","Es el Sistema de Gestión de Seguridad y Salud en el Trabajo, que previene accidentes y enfermedades laborales.",["C-SST-01"]],
+ ["Seguridad y salud en el trabajo","¿Qué es el COPASST?","copasst comite paritario","Es el Comité Paritario de Seguridad y Salud en el Trabajo, conformado por representantes del empleador y de los trabajadores.",["C-SST-01"]],
+ ["Seguridad y salud en el trabajo","¿Qué hago si tengo un accidente de trabajo?","accidente trabajo laboral reportar arl","Avise de inmediato a su jefe y al área de SST. El empleador debe reportarlo a la ARL dentro de los dos días hábiles siguientes.",["C-SST-01"]],
+ ["Seguridad y salud en el trabajo","¿Qué es la brigada de emergencias?","brigada emergencias brigadistas","Es el grupo de servidores capacitados para actuar en primeros auxilios, evacuación y control de incendios en la sede.",["C-SST-01"]],
+ ["Seguridad y salud en el trabajo","¿Qué es el plan de emergencias y evacuación?","plan emergencias evacuacion simulacro","Define cómo actuar ante una emergencia: rutas de evacuación, puntos de encuentro y responsables. Se practica con simulacros.",["C-SST-01","C-AS-01"]],
+ ["Tecnología","¿Cómo reporto una falla tecnológica?","falla tecnologica soporte mesa ayuda equipo","Repórtela a la mesa de ayuda del proceso de Gestión Tecnológica, indicando equipo, sede y descripción del problema.",["C-GT-01"]],
+ ["Tecnología","¿Cómo protejo la información en mi equipo?","proteger informacion seguridad contrasena equipo","Use contraseñas robustas y no las comparta, bloquee el equipo al levantarse y guarde la información en los repositorios institucionales.",["C-GT-01"]],
+ ["Tecnología","¿Qué hago si recibo un correo sospechoso?","correo sospechoso phishing enlace fraude","No abra enlaces ni adjuntos ni responda con datos. Repórtelo al área de tecnología y elimínelo.",["C-GT-01"]],
+ ["Tecnología","¿Qué hace Gestión de la Información Judicial?","informacion judicial jurisprudencia relatoria","Produce y divulga información de jurisprudencia, normatividad y relatoría para servidores y ciudadanos.",["C-GIJ-01"]],
+ ["Contratación y recursos","¿Cómo se contratan bienes y servicios en la Rama?","contratar bienes servicios contratacion secop","Por el proceso de Compras Públicas, conforme a la ley de contratación estatal y publicando los procesos en el SECOP.",["C-CP-01"]],
+ ["Contratación y recursos","¿Qué es el plan anual de adquisiciones?","plan anual adquisiciones compras","Es la lista de bienes y servicios que la entidad planea comprar en el año. Se publica para dar transparencia a la contratación.",["C-CP-01"]],
+ ["Contratación y recursos","¿Qué es la supervisión de un contrato?","supervision supervisor contrato seguimiento","Es el seguimiento técnico, administrativo y financiero que hace un servidor designado para verificar que el contratista cumpla.",["C-CP-01"]],
+ ["Contratación y recursos","¿Cómo solicito un bien o servicio administrativo?","solicitar bien servicio administrativo elementos","A través del proceso de Gestión Administrativa de su seccional o del nivel central, según el bien o servicio que necesite.",["C-GA-01"]],
+ ["Contratación y recursos","¿Qué es el anteproyecto de presupuesto?","anteproyecto presupuesto financiero","Es la propuesta de presupuesto de la Rama para la siguiente vigencia, que prepara el proceso de Gestión Financiera y Presupuestal.",["C-GFP-01"]],
+ ["Control interno","¿Qué es el control interno?","control interno que es","Es el conjunto de políticas y controles que asegura que la entidad cumpla sus objetivos, use bien sus recursos y cumpla la ley.",["C-CIA-01"]],
+ ["Control interno","¿Qué diferencia hay entre la auditoría de control interno y la de calidad?","diferencia auditoria control interno calidad","La de control interno evalúa el sistema de control y la gestión en general; la de calidad verifica el cumplimiento de las normas del SIGCMA. Se complementan.",["C-CIA-01","P-ESG-01"]],
+ ["Control interno","¿Qué son los entes de control externos?","entes control externos contraloria procuraduria","Son entidades como la Contraloría General de la República y la Procuraduría General de la Nación, que vigilan la gestión pública.",["C-CIA-01"]],
+ ["Procesos","¿Qué es el Reordenamiento Judicial?","reordenamiento judicial despachos crear","Es el proceso misional que ajusta la oferta judicial (creación, traslado o supresión de despachos) según la demanda de justicia.",["C-RJ-01"]],
+ ["Procesos","¿Qué hace Modernización de la Gestión Judicial?","modernizacion gestion judicial","Implementa modelos de gestión y herramientas que mejoran la prestación del servicio de justicia.",["C-MGJ-01"]],
+ ["Procesos","¿Cómo se tramita la tarjeta profesional de abogado?","tarjeta profesional abogado registro urna","Ante la Unidad de Registro Nacional de Abogados, dentro del proceso de Registro y Control de Abogados y Auxiliares de la Justicia.",["C-RCA-01"]],
+ ["Procesos","¿Qué son los auxiliares de la justicia?","auxiliares justicia peritos secuestres curadores","Son personas que apoyan a los jueces en tareas específicas, como peritos, secuestres, partidores y curadores.",["C-RCA-01"]],
+ ["Procesos","¿Qué hace Gestión para la Integración de Listas de Altas Cortes?","listas altas cortes candidatos magistrados","Conforma y remite las listas de candidatos para magistrados de las altas cortes con criterios de transparencia.",["C-GIL-01"]],
+ ["Procesos","¿Qué hace Mejoramiento de la Infraestructura Física?","infraestructura fisica sedes mantenimiento","Adecúa, construye y mantiene las sedes judiciales para un servicio accesible y seguro.",["C-MIF-01"]],
+ ["Procesos","¿Qué hace Asistencia Legal?","asistencia legal juridica defensa","Representa judicialmente a la entidad y emite conceptos jurídicos.",["C-AL-01"]],
+ ["Procesos","¿Qué hace Administración de la Seguridad?","administracion seguridad proteccion instalaciones","Protege a los servidores, usuarios e instalaciones judiciales.",["C-AS-01"]],
+ ["Procesos","¿Qué hace Gestión Financiera y Presupuestal?","gestion financiera presupuestal pagos","Programa, ejecuta y controla el presupuesto de la Rama Judicial.",["C-GFP-01"]],
+ ["Antisoborno","¿Qué es un sistema de gestión antisoborno?","sistema gestion antisoborno 37001 que es","Es un conjunto de políticas y controles para prevenir, detectar y responder al soborno. Su referente internacional es la norma ISO 37001.",[]],
+ ["Antisoborno","¿Qué es el soborno?","soborno que es definicion ventaja indebida","Es ofrecer, prometer, dar, aceptar o solicitar una ventaja indebida, de cualquier valor, para que alguien actúe o deje de actuar en relación con sus funciones.",[]],
+ ["Antisoborno","¿Qué es un conflicto de interés?","conflicto interes intereses imparcialidad","Es una situación en la que un interés personal, familiar o económico puede afectar la imparcialidad del servidor al decidir. Debe declararse y, si aplica, apartarse del asunto.",[]],
+ ["Antisoborno","¿Qué hago si me ofrecen un regalo o una dádiva?","regalo dadiva ofrecen obsequio dinero","No lo acepte. Infórmelo a su superior y por los canales de denuncia de la entidad, dejando registro de la fecha, la persona y lo ofrecido.",[]],
+ ["Antisoborno","¿Puedo aceptar invitaciones o atenciones de abogados o partes de un proceso?","invitaciones atenciones abogados partes almuerzo","No. Cualquier atención de quien tiene interés en un asunto puede comprometer la imparcialidad y la confianza en la justicia.",[]],
+ ["Antisoborno","¿Cómo reporto un posible acto de soborno o corrupción?","reportar denunciar soborno corrupcion canal denuncia","Por los canales de denuncia institucionales publicados en el portal de la Rama Judicial o ante los entes de control. La denuncia de buena fe debe protegerse frente a represalias.",[]],
+ ["Antisoborno","¿Qué es la debida diligencia?","debida diligencia verificacion proveedores contratistas","Es la verificación previa del riesgo de soborno al relacionarse con contratistas, proveedores o servidores en cargos sensibles.",["C-CP-01"]],
+ ["Antisoborno","¿Qué es el riesgo de soborno?","riesgo soborno corrupcion identificar","Es la posibilidad de que ocurra un acto de soborno en un proceso, por ejemplo en contratación o en trámites con usuarios. Se identifica y controla igual que los demás riesgos.",["G-ESG-01"]],
+ ["Antisoborno","¿Qué es la función de cumplimiento antisoborno?","funcion cumplimiento oficial antisoborno responsable","Es la persona o el equipo con autonomía para supervisar que los controles antisoborno se apliquen y para atender consultas y denuncias.",[]],
+ ["Antisoborno","¿Qué es una política antisoborno?","politica antisoborno cero tolerancia","Es la declaración de la alta dirección que prohíbe el soborno, exige cumplir la ley y explica cómo reportar sin temor a represalias.",[]],
+ ["Antisoborno","¿Qué normas anticorrupción aplican en Colombia?","normas anticorrupcion ley 1474 2195 estatuto","Entre otras, la Ley 1474 de 2011 (Estatuto Anticorrupción) y la Ley 2195 de 2022, sobre transparencia, prevención y lucha contra la corrupción.",[]],
+ ["Antisoborno","¿Qué es la declaración de bienes, rentas y conflictos de interés?","declaracion bienes rentas conflictos ley 2013","Es la información que los servidores obligados deben publicar según la Ley 2013 de 2019, para dar transparencia a su patrimonio e intereses.",[]],
+ ["Seguridad de la información","¿Qué es la seguridad de la información?","seguridad informacion confidencialidad integridad disponibilidad","Es proteger la información en tres aspectos: confidencialidad (solo la ve quien debe), integridad (no se altera sin control) y disponibilidad (está cuando se necesita).",["C-GT-01"]],
+ ["Seguridad de la información","¿Qué es la ISO 27001?","iso 27001 sgsi norma","Es la norma internacional para un Sistema de Gestión de Seguridad de la Información (SGSI): identifica riesgos sobre la información y aplica controles para tratarlos.",["C-GT-01"]],
+ ["Seguridad de la información","¿Qué es el MSPI?","mspi modelo seguridad privacidad mintic","Es el Modelo de Seguridad y Privacidad de la Información de MinTIC, que orienta a las entidades públicas colombianas en esta materia.",["C-GT-01"]],
+ ["Seguridad de la información","¿Qué es un activo de información?","activo informacion inventario","Es cualquier información o recurso que la contiene y tiene valor para la entidad: expedientes, bases de datos, equipos, aplicativos e incluso el conocimiento de las personas.",["C-GT-01"]],
+ ["Seguridad de la información","¿Cómo se clasifica la información?","clasificar clasificacion informacion publica reservada clasificada","Según la Ley 1712 de 2014, la información puede ser pública, pública clasificada o pública reservada. La clasificación define quién puede acceder a ella.",["C-GD-01"]],
+ ["Seguridad de la información","¿Qué es un incidente de seguridad de la información?","incidente seguridad informacion evento","Es un evento que compromete la confidencialidad, integridad o disponibilidad de la información, como un acceso no autorizado, un virus o la pérdida de un equipo.",["C-GT-01"]],
+ ["Seguridad de la información","¿Cómo reporto un incidente de seguridad?","reportar incidente seguridad informatico","Repórtelo de inmediato a la mesa de ayuda o al área de tecnología, sin intentar resolverlo por su cuenta ni borrar evidencias.",["C-GT-01"]],
+ ["Seguridad de la información","¿Qué es la protección de datos personales?","proteccion datos personales habeas data 1581","Es el deber de tratar los datos de las personas solo para fines autorizados y con medidas de seguridad, según la Ley 1581 de 2012.",[]],
+ ["Seguridad de la información","¿Qué es la ingeniería social?","ingenieria social engaño llamada suplantacion","Es engañar a una persona para que entregue información o accesos, por ejemplo con llamadas o correos que suplantan a TI o a un superior. Verifique siempre antes de entregar datos.",["C-GT-01"]],
+ ["Seguridad de la información","¿Puedo usar memorias USB o mi correo personal para información del despacho?","usb memoria correo personal informacion despacho","Debe evitarse. Use el correo y los repositorios institucionales; los medios personales pueden perder o exponer información reservada.",["C-GT-01"]],
+ ["Seguridad de la información","¿Qué hago si pierdo mi equipo o celular con información institucional?","perdi pierdo equipo celular robo portatil","Repórtelo de inmediato al área de tecnología para bloquear accesos y cambie sus contraseñas institucionales.",["C-GT-01"]],
+ ["Seguridad de la información","¿Puedo usar herramientas de inteligencia artificial con información judicial?","inteligencia artificial ia chatgpt herramientas informacion judicial","Solo las autorizadas por la entidad y siguiendo sus lineamientos. No ingrese datos personales ni información reservada de procesos en herramientas no aprobadas.",["C-GT-01"]],
+ // Preguntas aprobadas el 10-nov-2026 (validación en hoja)
+ ["Uso del mapa", "¿Cómo busco un documento en el mapa?", "uso del mapa buscar busco buscador barra busqueda", "Escriba en la barra de búsqueda el nombre, una palabra clave o el código del documento. Los resultados aparecen mientras escribe; haga clic en uno para ver su ficha, consultarlo o descargarlo.", []],
+ ["Uso del mapa", "¿Puedo buscar un documento por su código?", "uso del mapa", "Sí. Escriba el código completo o parte de él (por ejemplo F-EVSG-03) en la barra de búsqueda. No importa si usa mayúsculas o minúsculas.", []],
+ ["Uso del mapa", "¿Cómo veo todos los documentos de un proceso?", "uso del mapa", "Haga clic sobre el nombre del proceso en el mapa. Se abre un panel con todas sus caracterizaciones, procedimientos, formatos, instructivos, manuales, guías y fichas de indicadores.", []],
+ ["Uso del mapa", "¿Cómo filtro los documentos por tipo?", "uso del mapa", "Use los botones que están debajo de la barra de búsqueda (Caracterizaciones, Procedimientos, Formatos, etc.). Al elegir uno, el mapa y la búsqueda muestran solo ese tipo de documento.", []],
+ ["Uso del mapa", "¿Cómo descargo un formato?", "uso del mapa", "Busque el formato o ábralo desde su proceso y use el botón de descarga de la ficha del documento. Descargue siempre la versión publicada para asegurarse de usar la vigente.", []],
+ ["Uso del mapa", "¿Qué hago si no encuentro un documento?", "uso del mapa", "Pruebe con otra palabra o con el código. Si aun así no aparece, puede que el documento esté en actualización o no sea público; consulte al líder del proceso o al equipo del SIGCMA.", []],
+ ["Uso del mapa", "¿Qué significan los niveles y colores del mapa?", "uso del mapa", "El mapa agrupa los procesos en cuatro niveles: estratégicos (orientan la entidad), misionales (prestan el servicio de justicia), de apoyo (dan los recursos) y de evaluación y mejora (miden y mejoran). Cada nivel tiene su propio color.", []],
+ ["Uso del mapa", "¿Qué representan los objetivos PSD que aparecen al lado del mapa?", "uso del mapa", "Son los objetivos del Plan Sectorial de Desarrollo 2023-2026 de la Rama Judicial. Muestran hacia dónde apuntan los procesos del SIGCMA.", []],
+ ["Uso del mapa", "¿Qué significa el marco Antisoborno y Anticorrupción del mapa?", "uso del mapa", "Indica que el sistema de gestión antisoborno abarca todos los procesos: los controles contra el soborno y la corrupción aplican a todo el mapa, no a un proceso en particular.", []],
+ ["Uso del mapa", "¿Cada cuánto se actualiza la información del mapa?", "uso del mapa", "La información sale del listado maestro de documentos. La fecha de corte se muestra en la página; cuando el listado se actualiza, el mapa se actualiza también.", ["n:Formato listado maestro de documentos"]],
+ ["Control interno", "¿Qué hace el proceso de Control Interno y Auditoría?", "control interno", "Evalúa de manera independiente la gestión de la entidad mediante auditorías y seguimientos, y propone mejoras. Su caracterización describe objetivo, alcance, actividades y responsables.", ["n:Caracterización Proceso de Control Interno y Auditoría"]],
+ ["Control interno", "¿Qué es una auditoría interna de gestión?", "control interno", "Es la evaluación que hace control interno sobre un proceso o dependencia para verificar el cumplimiento de objetivos, normas y controles. Se realiza según el procedimiento establecido.", ["n:Procedimiento de realización de auditoría interna de gestión"]],
+ ["Control interno", "¿Qué es una auditoría especial?", "control interno", "Es una auditoría no programada que se hace por una situación particular, una solicitud o un riesgo identificado. Tiene su propio procedimiento.", ["n:Procedimiento de realización de auditoría especial"]],
+ ["Control interno", "¿Cómo se formula y sigue un plan de mejoramiento de control interno?", "control interno", "A partir de los hallazgos del informe de auditoría, el proceso auditado define acciones, responsables y fechas, y control interno hace seguimiento a su cumplimiento.", ["n:Procedimiento formulación, evaluación y seguimiento de planes de mejoramien"]],
+ ["Control interno", "¿Qué son las líneas de defensa?", "control interno", "Es un modelo que reparte la responsabilidad del control: la primera línea son los líderes y servidores de cada proceso, la segunda quienes supervisan riesgos y calidad, y la tercera control interno.", []],
+ ["Comunicación", "¿Qué hace el proceso de Comunicación Institucional?", "comunicación", "Gestiona la información que la Rama Judicial comunica a servidores y ciudadanos, por medios internos y externos. Su caracterización describe el proceso completo.", ["n:Estratégico: comunicación institucional"]],
+ ["Comunicación", "¿Cómo se elabora el plan de comunicaciones?", "comunicación", "Se sigue el procedimiento para elaborar el plan de comunicaciones, que define públicos, mensajes, medios y fechas.", ["n:Procedimiento para elaborar el plan de comunicaciones"]],
+ ["Comunicación", "¿Cómo se publica información en el portal web?", "comunicación", "Existe un procedimiento para cargar, publicar y divulgar información en el portal web. La publicación la gestiona el área encargada del portal.", ["n:Procedimiento para cargar, publicar y divulgar información en el portal web"]],
+ ["Comunicación", "¿Dónde veo el cronograma de publicaciones?", "comunicación", "El seguimiento al cronograma de publicaciones se lleva en el formato establecido para ello.", ["n:Formato para seguimiento a cronograma de publicaciones"]],
+ ["Atención al usuario", "¿Cuánto tiempo hay para responder un derecho de petición?", "atención al usuario", "Por regla general, 15 días hábiles. Las solicitudes de documentos o información, 10 días hábiles, y las consultas, 30 días hábiles (Ley 1755 de 2015).", ["n:Procedimiento para gestionar peticiones, quejas"]],
+ ["Atención al usuario", "¿Cómo hago seguimiento a las peticiones que recibo?", "atención al usuario", "Registre cada petición y su estado en la bitácora de seguimiento de peticiones, para controlar los plazos de respuesta.", ["n:Bitácora de Seguimiento de Peticiones"]],
+ ["Atención al usuario", "¿Cómo se tramita una sugerencia o felicitación?", "atención al usuario", "Se reciben y gestionan por los mismos canales de las PQRSD, según el procedimiento establecido. También sirven como insumo para la mejora.", ["n:Procedimiento para gestionar peticiones, quejas"]],
+ ["Atención al usuario", "¿Dónde está el procedimiento para medir la satisfacción del usuario?", "atención al usuario", "El procedimiento para el seguimiento y la medición de la satisfacción explica cómo se aplican las encuestas y cómo se analizan los resultados.", ["n:seguimiento y la medición de la satisfacción"]],
+ ["Tecnología", "¿Cómo se solicita un cambio tecnológico?", "tecnología", "Los cambios en sistemas o infraestructura tecnológica se solicitan y aprueban mediante el procedimiento de control de cambios de tecnología.", ["n:Procedimiento control de cambios de tecnología"]],
+ ["Tecnología", "¿Qué son los logs de auditoría?", "tecnología", "Son registros que guardan quién hizo qué y cuándo en un sistema de información. Sirven para trazabilidad e investigación de incidentes.", ["n:Procedimiento para generar logs de auditoría"]],
+ ["Tecnología", "¿Puedo diligenciar los formatos en el computador?", "tecnología", "Sí. Descargue el formato vigente, diligéncielo en el computador y guárdelo sin cambiar su estructura, su código ni su versión.", []],
+ ["Tecnología", "¿Qué hago si un documento del mapa no abre o no descarga?", "tecnología", "Intente con otro navegador o actualice la página. Si el problema continúa, repórtelo al equipo del SIGCMA indicando el código del documento.", []],
+ ["Gestión del cambio", "¿Qué es la gestión del cambio en el SIGCMA?", "gestión del cambio", "Es planificar los cambios que afectan al sistema (en procesos, estructura, normas o tecnología) para que se hagan de forma controlada y sin afectar el servicio.", ["n:Procedimiento para la planificación y gestión del cambio", "n:y planificación del cambio"]],
+ ["Gestión del cambio", "¿Cuándo debo planificar un cambio?", "gestión del cambio", "Cuando vaya a modificar un proceso, su estructura, sus recursos, sus responsables o sus documentos de forma que pueda afectar los resultados del sistema.", ["n:Procedimiento para la planificación y gestión del cambio"]],
+ ["Gestión del cambio", "¿Qué formato uso para solicitar un cambio?", "gestión del cambio", "Use el formato para la solicitud y planificación del cambio.", ["n:y planificación del cambio"]],
+ ["Gestión del cambio", "¿Cómo se gestiona un cambio en seguridad y salud en el trabajo?", "gestión del cambio", "El SG-SST tiene su propio procedimiento de gestión del cambio, que evalúa los peligros y riesgos antes de hacer el cambio.", ["n:Procedimiento de Gestión del Cambio en el Sistema", "n:Formato Gestión del Cambio"]],
+ ["Contexto y partes interesadas", "¿Dónde está la matriz de contexto de la organización?", "contexto y partes interesadas", "La matriz de identificación del contexto recoge las cuestiones internas y externas que afectan a la entidad.", ["n:Matriz de identificación contexto de la organización"]],
+ ["Contexto y partes interesadas", "¿Dónde está la matriz de partes interesadas?", "contexto y partes interesadas", "Las necesidades y expectativas de las partes interesadas se registran en su matriz.", ["n:Matriz de necesidades y expectativas de las partes interesadas"]],
+ ["Contexto y partes interesadas", "¿Qué es la matriz de requisitos legales?", "contexto y partes interesadas", "Es el listado de las normas y otros requisitos que la entidad debe cumplir, con su evaluación de cumplimiento. Se identifica según su procedimiento.", ["n:Procedimiento identificación de requisitos legales y otros", "n:Matriz de requisitos legales y otros"]],
+ ["Contexto y partes interesadas", "¿Cada cuánto se revisa el contexto de la organización?", "contexto y partes interesadas", "Se revisa periódicamente y cada vez que hay cambios importantes en la entidad o en su entorno. Confirmar la periodicidad definida por el SIGCMA.", []],
+ ["Revisión por la dirección", "¿Cada cuánto se hace la revisión por la dirección?", "revisión por la dirección", "Se hace a intervalos planificados, normalmente una vez al año. Confirmar la periodicidad definida por el SIGCMA.", ["n:Formato informe de revisión por la dirección"]],
+ ["Revisión por la dirección", "¿Qué información se presenta en la revisión por la dirección?", "revisión por la dirección", "Entre otros: estado de acciones anteriores, cambios del contexto, satisfacción del usuario, cumplimiento de objetivos, desempeño de procesos, no conformidades, resultados de auditorías, recursos, riesgos y oportunidades de mejora.", ["n:Formato informe de revisión por la dirección"]],
+ ["Revisión por la dirección", "¿Qué decisiones salen de la revisión por la dirección?", "revisión por la dirección", "Decisiones sobre oportunidades de mejora, cambios necesarios en el sistema y recursos requeridos.", ["n:Formato informe de revisión por la dirección"]],
+ ["Salidas no conformes", "¿Cómo registro una salida no conforme?", "salidas no conformes", "Regístrela en el formato de salidas no conformes, indicando qué falló, qué tratamiento se aplicó y quién lo autorizó.", ["n:Formato salidas no conformes"]],
+ ["Salidas no conformes", "¿Qué ejemplos hay de salidas no conformes en un despacho?", "salidas no conformes", "Por ejemplo: una providencia con error en los datos de las partes, una notificación enviada a una dirección equivocada o un oficio con información incompleta.", ["n:Formato salidas no conformes"]],
+ ["Salidas no conformes", "¿Quién decide qué hacer con una salida no conforme?", "salidas no conformes", "El responsable del proceso o del despacho decide el tratamiento (corregir, reponer, informar al usuario o aceptarla con autorización) y deja el registro.", ["n:Formato salidas no conformes"]],
+ ["Documentos", "¿Cómo se codifica un documento nuevo?", "documentos", "La guía para la elaboración y codificación de documentos explica cómo se forma el código según el tipo de documento y el proceso.", ["n:Guía para la elaboración y codificación de documentos"]],
+ ["Documentos", "¿Qué es el listado maestro de acciones de gestión?", "documentos", "Es el registro consolidado de las acciones correctivas, preventivas y de mejora, con su estado y seguimiento.", ["n:Formato listado maestro de acciones de gestión"]],
+ ["Documentos", "¿Qué hago si encuentro un error en un documento publicado?", "documentos", "Informe al líder del proceso dueño del documento o al equipo del SIGCMA, indicando el código y el error, para que se tramite la actualización.", []],
+ ["Seccionales y despachos", "¿Cómo participa mi despacho en el SIGCMA?", "seccionales y despachos", "Aplicando los procedimientos y formatos vigentes, reportando la información que se le solicita, atendiendo las auditorías y proponiendo mejoras.", []],
+ ["Seccionales y despachos", "¿A quién acudo si tengo dudas del SIGCMA en mi seccional?", "seccionales y despachos", "Al profesional o enlace del SIGCMA de su seccional. Si no lo identifica, puede escribir al equipo del SIGCMA del nivel central. Confirmar el canal oficial.", []],
+ ["Seccionales y despachos", "¿Mi despacho está certificado?", "seccionales y despachos", "Depende del alcance de la certificación vigente del SIGCMA, que define qué sedes y procesos están incluidos. Confirmar el alcance actualizado.", []],
+ ["Seccionales y despachos", "¿Qué debo tener listo en mi despacho para una auditoría?", "seccionales y despachos", "Los documentos y registros que muestran cómo se trabaja: formatos diligenciados, seguimiento a indicadores y riesgos, acciones de mejora y evidencias de capacitación.", ["n:Procedimiento de realización de auditoría interna de gestión"]],
+ ["Seccionales y despachos", "¿Los servidores en teletrabajo también aplican el SIGCMA?", "seccionales y despachos", "Sí. Los procesos y controles del sistema aplican igual; además, el SG-SST lleva el registro de los servidores en teletrabajo.", ["n:Lista de servidores en despacho en teletrabajo"]],
+ ["Seccionales y despachos", "¿Cómo se implementa el SIGCMA en una sede nueva?", "seccionales y despachos", "Se planifica con el equipo del SIGCMA: identificación de procesos, capacitación, adopción de documentos y seguimiento hasta la auditoría. Confirmar con el equipo del SIGCMA.", []],
+ ["Riesgos e indicadores", "¿Dónde está el formato del plan de acción?", "riesgos e indicadores", "El plan de acción de la vigencia se registra en su formato.", ["n:Formato Plan de acción Vigencia"]],
+ ["Riesgos e indicadores", "¿Cómo se formula un indicador?", "riesgos e indicadores", "Defina qué quiere medir, la fórmula, la meta, la frecuencia de medición, la fuente de los datos y el responsable, y regístrelo en la ficha de indicadores del proceso.", []],
+ ["Riesgos e indicadores", "¿Quién reporta los indicadores de mi proceso?", "riesgos e indicadores", "El responsable designado en la ficha del indicador, en la frecuencia definida allí.", []],
+ ["Auditorías", "Me van a auditar, ¿qué hago?", "auditorías auditar auditoria", "Revise que sus documentos y registros estén al día, tenga a mano las evidencias y repase los resultados de la auditoría anterior. (Variante de “¿Cómo me preparo si van a auditar mi proceso?”)", ["n:Procedimiento de realización de auditoría interna de gestión"]],
+ ["Documentos", "¿Dónde está el formato del acta?", "documentos", "Hay varios formatos de acta según el proceso. Escriba “acta” en la barra de búsqueda y elija el de su proceso.", []],
+ ["Mejora", "Se me venció una acción de mejora, ¿qué hago?", "mejora vencida atrasada", "Actualice el seguimiento, explique la causa del retraso y defina una nueva fecha con el responsable. Infórmelo en el reporte de acciones de gestión.", ["n:Formato de reporte de acciones preventivas", "n:Formato listado maestro de acciones de gestión"]],
+ ["Mejora", "Necesito el formato de salidas no conformes", "mejora", "Es el formato de salidas no conformes del proceso de mejoramiento del SIGCMA.", ["n:Formato salidas no conformes"]],
+ ["Atención al usuario", "¿Dónde pongo una queja?", "atención al usuario queja reclamo pqrsd", "Las quejas, reclamos y sugerencias se presentan por los canales de atención al ciudadano, según el procedimiento de PQRSD.", ["n:Procedimiento para gestionar peticiones, quejas"]],
+ ["Documentos", "No sé a qué proceso pertenece mi documento", "documentos", "Busque el documento por nombre o código: en el resultado aparece el proceso al que pertenece. Las letras del código también lo indican.", ["n:Guía para la elaboración y codificación de documentos"]],
+ ["Mejora", "¿Qué formato uso para reportar una acción correctiva?", "mejora", "Use el formato de reporte de acciones preventivas, correctivas y de mejora.", ["n:Formato de reporte de acciones preventivas"]],
+].map(([t,q,k,a,d])=>({t,q,a,d,keys:new Set(toks(q+" "+k)),qk:toks(q),w:lead(q)}));
+function lead(s){const n=norm(s).replace(/[¿?¡!,.]/g," ").trim();const m=n.match(/^(que es|que son|que hago|que diferencia|como|cual|cuales|donde|cuando|quien|para que|hay|puedo)\b/);return m?m[1]:""}
+function toks(s){
+  const STOP=new Set("que cual cuales como donde cuando quien para por con sin una uno unos unas los las del el la de en es y o a al se mi mis su sus hay esta este estos esas ese lo le me necesito quiero busco tengo hacer hace".split(" "));
+  const SYN={plantilla:"formato",formulario:"formato",checklist:"verificacion",chequeo:"verificacion",auditorias:"auditoria",auditar:"auditoria",riesgo:"riesgos",indicador:"indicadores",documentos:"documento",procesos:"proceso",correctivas:"correctiva",acciones:"accion"};
+  return norm(s).replace(/[^a-z0-9ñ ]/g," ").split(/\s+/).filter(w=>w.length>2&&!STOP.has(w)).map(w=>SYN[w]||w);
+}
+function faqMatch(q){
+  const t=toks(q);if(!t.length)return [];
+  const lw=lead(q);
+  return FAQ.map(f=>{let hit=0;t.forEach(w=>{if(f.keys.has(w))hit+=1;else if([...f.keys].some(k=>k.length>4&&(k.startsWith(w)||w.startsWith(k))))hit+=.6});
+    const qh=f.qk.filter(w=>t.includes(w)).length, j=qh/new Set([...f.qk,...t]).size+(lw&&lw===f.w?.15:0);
+    return {f,s:hit/t.length,hit,j}}).filter(x=>x.hit>=1).sort((a,b)=>b.s-a.s||b.j-a.j||b.hit-a.hit);
+}
+function addBtns(m,sel,list){const box=m.querySelector(sel);list.forEach(s=>{const b=document.createElement("button");b.type="button";b.textContent=s;b.addEventListener("click",()=>ask(s));box.appendChild(b)})}
+function greet(){
+  log.innerHTML="";
+  const temas=[...new Set(FAQ.map(f=>f.t))];
+  const m=say(`Hola. Tengo ${FAQ.length} preguntas frecuentes del SIGCMA con su documento de soporte. Escriba su pregunta o elija un tema:<div class="sugs" id="temas" style="margin-top:8px"></div>`,"b");
+  const box=m.querySelector("#temas");box.removeAttribute("id");
+  temaBtns(box);
+}
+const TEMAS=[...new Set(FAQ.map(f=>f.t))];
+function temaBtns(box){TEMAS.forEach(t=>{const b=document.createElement("button");b.type="button";b.textContent=`${t} (${FAQ.filter(f=>f.t===t).length})`;b.addEventListener("click",()=>{say(esc(t),"u");listTema(t)});box.appendChild(b)})}
+function listTema(t){
+  const qs=FAQ.filter(f=>f.t===t);
+  const codes=[...new Set(qs.flatMap(f=>f.docs||[]).map(d=>d.codigo).filter(Boolean))];
+  const r=say(`En <b>${esc(t.toLowerCase())}</b> le puedo ayudar con ${qs.length} preguntas. Toque una para ver la respuesta y su documento:<div class="sugs" style="margin-top:8px"></div>${codes.length?`<div style="margin-top:8px;font-size:12.5px;color:var(--muted)">Documentos de este tema: ${codes.join(", ")}</div>`:""}`,"b");
+  addBtns(r,".sugs",qs.map(f=>f.q));
+}
+function bulkDocs(q){
+  const nq=norm(q);
+  if(!/\b(todos|todas|cada|todo el|toda la)\b/.test(nq))return null;
+  const DROP=new Set("todos todas cada todo toda proceso procesos traeme traer trae traes traigas traiga dame deme muestrame mostrar muestra lista listado listar documento documentos sistema sigcma mapa existan existen existe existentes hay tiene tienen tenemos esten estan disponibles vigentes".split(" "));
+  const TIPO={caracterizacion:"Caracterización",caracterizaciones:"Caracterización",procedimiento:"Procedimiento",procedimientos:"Procedimiento",formato:"Formato",formatos:"Formato",guia:"Guía",guias:"Guía",manual:"Manual",manuales:"Manual",instructivo:"Instructivo",instructivos:"Instructivo",anexo:"Anexo",anexos:"Anexo",protocolo:"Protocolo",protocolos:"Protocolo",programa:"Programa",programas:"Programa"};
+  const raw=nq.replace(/[^a-z0-9ñ ]/g," ").split(/\s+/).filter(w=>w.length>2);
+  const tipo=raw.map(w=>TIPO[w]).find(Boolean);
+  const STOP=new Set("que cual cuales como donde para por con los las del de en una uno unos unas me mi".split(" "));
+  const terms=raw.filter(w=>!DROP.has(w)&&!STOP.has(w)&&!TIPO[w]).map(w=>w.replace(/(es|s)$/,"").slice(0,6));
+  if(!tipo&&!terms.length)return null;
+  const hits=DOCS.filter(d=>(!tipo||d.tipo===tipo)&&terms.every(t=>norm(d.titulo).includes(t)));
+  return hits.length?{hits,tipo,terms}:{hits:[],tipo,terms};
+}
+function temaIntent(q){
+  const nq=norm(q), qt=toks(q);
+  const wants=/(asist|ayud|puedes|preguntas|temas|relacionad|que sabes|que tienes|opciones|todo sobre|informacion sobre|que hay de|que hay sobre)/.test(nq);
+  const sc=TEMAS.map(t=>[t,toks(t).filter(w=>w.length>3&&qt.some(x=>x===w||(x.length>5&&w.length>5&&x.slice(0,6)===w.slice(0,6)))).length]);
+  const best=Math.max(0,...sc.map(x=>x[1]));
+  const tm=best?sc.filter(x=>x[1]===best).map(x=>x[0]):[];
+  const tt=tm.flatMap(t=>toks(t));
+  const onlyTema=tm.length>0&&qt.every(x=>tt.some(w=>x===w||(x.length>5&&w.length>5&&x.slice(0,6)===w.slice(0,6))));
+  return {wants,tm,onlyTema};
+}
+function cite(d){const p=byId(d.proc);return `<li><button class="cite" data-p="${p.id}" data-d="${d.id}">${d.codigo?esc(d.codigo)+" · ":""}${esc(d.titulo)}</button> <span style="color:var(--muted);font-size:12.5px">(${esc(p.nombre)}${d.version!==""?", v"+d.version:""})</span></li>`}
+function ask(q){
+  say(esc(q),"u");
+  const bk=bulkDocs(q);
+  if(bk&&(bk.hits.length>1||(bk.tipo&&!bk.terms.length&&bk.hits.length))){
+    const grupos=["est","mis","apo","eva"].map(lv=>[lv,bk.hits.filter(d=>byId(d.proc).nivel===lv)]).filter(g=>g[1].length);
+    const nombre=bk.terms.length?bk.hits[0].titulo.toLowerCase():(bk.tipo||"documento").toLowerCase();
+    const nProc=new Set(bk.hits.map(d=>d.proc)).size;
+    const tiposHit=[...new Set(bk.hits.map(d=>d.tipo))];
+    const t1=bk.tipo||(tiposHit.length===1?tiposHit[0]:null);
+    const etiqueta=t1?(bk.hits.length===1?esc(t1.toLowerCase()):PLURAL[t1].toLowerCase()):"documentos";
+    const m=say(`Encontré <b>${bk.hits.length}</b> ${etiqueta} en <b>${nProc}</b> ${nProc===1?"proceso":"procesos"}. Toque cualquiera para abrir su vista previa:${grupos.map(([lv,ds])=>`<div style="margin-top:10px;font-family:var(--display);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">${GRUPO[lv]}</div><ol>${ds.map(cite).join("")}</ol>`).join("")}`,"b");
+    m.querySelectorAll(".cite").forEach(b=>b.addEventListener("click",()=>openPanel(b.dataset.p,b.dataset.d)));
+    highlight([...new Set(bk.hits.map(d=>d.proc))]);
+    return;
+  }
+  const ti=temaIntent(q);
+  const fm0=faqMatch(q), strong=fm0.length&&fm0[0].s>=0.75;
+  const isQ=lead(q)!=="";
+  if(ti.tm.length&&!(isQ&&strong)&&(ti.onlyTema||(ti.wants&&!strong))){ti.tm.forEach(listTema);return}
+  if(ti.wants&&!ti.tm.length&&!faqMatch(q).some(x=>x.s>=0.5)){const m=say(`Le puedo ayudar con ${FAQ.length} preguntas frecuentes en estos temas:<div class="sugs" style="margin-top:8px"></div>`,"b");temaBtns(m.querySelector(".sugs"));return}
+  const fm=faqMatch(q);
+  if(fm.length&&fm[0].s>=0.5){
+    const f=fm[0].f, ds=f.docs||[];
+    const rel=fm.slice(1,4).filter(x=>x.s>=0.34).map(x=>x.f.q);
+    const m=say(`<b>${esc(f.q)}</b><br>${esc(f.a)}${ds.length?`<ol>${ds.map(cite).join("")}</ol>`:""}${rel.length?`<div style="margin-top:8px;font-size:12.5px;color:var(--muted)">Preguntas relacionadas:</div><div class="sugs rel-q" style="margin-top:4px"></div>`:""}`,"b");
+    if(rel.length)addBtns(m,".rel-q",rel);
+    m.querySelectorAll(".cite").forEach(b=>b.addEventListener("click",()=>openPanel(b.dataset.p,b.dataset.d)));
+    return;
+  }
+  const n=norm(q);
+  let html;
+  const o=OBJS.findIndex(x=>norm(x).split(" ").filter(w=>w.length>5).some(w=>n.includes(w)) && /proceso|apoy|aport/.test(n));
+  const {procs,docs}=find(q.replace(/[¿?]/g,"").replace(/\b(que|cual|cuales|uso|para|el|la|los|las|de|del|es|un|una|formato|documento)\b/gi," "));
+  if(o>-1){
+    const ps=P.filter(p=>p.psd.includes(o));
+    html=`Estos procesos se alinean con el objetivo “${esc(OBJS[o])}”:<ol>${ps.map(p=>`<li><button class="cite" data-p="${p.id}">${esc(p.nombre)}</button></li>`).join("")}</ol>`;
+    highlight(ps.map(p=>p.id));
+  } else if(/objetivo|para que sirve|de que trata|entradas|salidas/.test(n) && procs.length){
+    const p=procs[0];const c=DOCS.find(d=>d.proc===p.id&&d.tipo==="Caracterización");
+    html=`<b>${esc(p.nombre)}</b> (${LV[p.nivel].toLowerCase()}): ${esc(p.objetivo)} ${c?`Las entradas, salidas y responsables están en su caracterización:<ol>${cite(c)}</ol>`:"Su caracterización aún no está registrada en el listado maestro."}`;
+  } else if(docs.length){
+    const top=docs.slice(0,3);
+    html=`Encontré ${docs.length===1?"este documento vigente":"estos documentos"} que responden a su consulta:<ol>${top.map(cite).join("")}</ol>Toque un código para abrirlo.`;
+  } else {
+    const near=fm.slice(0,3).map(x=>x.f.q);
+    html=`No encontré una respuesta precargada ni un documento para esa pregunta. ${near.length?"¿Quizás quiso preguntar alguna de estas?":"Le sugiero consultar al líder del proceso o a la Coordinación Nacional del SIGCMA."}${near.length?`<div class="sugs near-q" style="margin-top:8px"></div>`:""}`;
+    const m=say(html,"b");if(near.length)addBtns(m,".near-q",near);return;
+  }
+  const m=say(html,"b");
+  m.querySelectorAll(".cite").forEach(b=>b.addEventListener("click",()=>openPanel(b.dataset.p,b.dataset.d)));
+}
+document.getElementById("aiForm").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("aiq").value.trim();if(!v)return;document.getElementById("aiq").value="";ask(v)});
+const fab=document.getElementById("fab");
+function toggleAi(show){ai.hidden=!show;fab.hidden=show;if(show){if(!log.children.length)greet();document.getElementById("aiq").focus()}else fab.focus()}
+document.getElementById("openAi").addEventListener("click",()=>toggleAi(ai.hidden));
+fab.addEventListener("click",()=>toggleAi(true));
+document.getElementById("closeAi").addEventListener("click",()=>toggleAi(false));
+
+document.getElementById("sgasTag").addEventListener("click",()=>{toggleAi(true);say("Antisoborno y anticorrupción","u");listTema("Antisoborno")});
+function alinearPSD(){const w=document.querySelector(".psd-wrap"),h=document.querySelector(".psd-head"),o=document.querySelector(".psd-wrap .psd"),e=document.querySelector(".lv-est"),m=document.querySelector(".lv-mis"),v=document.querySelector(".lv-eva");if(!w||!h||!o||!e||!m||!v)return;if(window.innerWidth<=860){w.style.marginTop="0px";o.style.marginTop="0px";o.style.height="";return}o.style.height="";const mt=parseFloat(w.style.marginTop)||0,re=e.getBoundingClientRect(),rh=h.getBoundingClientRect();w.style.marginTop=Math.max(0,mt+(re.top+re.height/2)-(rh.top+rh.height/2))+"px";const om=parseFloat(o.style.marginTop)||0,rm=m.getBoundingClientRect(),rv=v.getBoundingClientRect(),ro=o.getBoundingClientRect();o.style.marginTop=(om+rm.top-ro.top)+"px";o.style.height=(rv.bottom-rm.top)+"px"}
+window.addEventListener("resize",alinearPSD);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(alinearPSD);
+init().then(alinearPSD);
+
+(function(){
+  const btn=document.getElementById('openAi');if(!btn)return;
+  const wrap=document.createElement('div');wrap.className='ai-wrap';btn.replaceWith(wrap);wrap.appendChild(btn);
+  const bub=document.createElement('div');bub.className='ai-bubble';bub.setAttribute('role','status');
+  bub.innerHTML='<span class="dot" aria-hidden="true">✦</span><span>¿Tiene dudas? Pregúnteme</span><button class="x" type="button" aria-label="Cerrar mensaje">✕</button>';
+  wrap.appendChild(bub);
+  let t;const outside=e=>{if(!bub.contains(e.target))hide()};
+  const hide=()=>{bub.classList.remove('show');clearTimeout(t);document.removeEventListener('click',outside,true)};
+  bub.addEventListener('click',e=>{if(e.target.closest('.x')){hide();return}hide();btn.click()});
+  setTimeout(()=>{bub.classList.add('show');t=setTimeout(hide,8000);document.addEventListener('click',outside,true)},1200);
+})();
+
+(function(){
+  const foot=document.querySelector('.site-foot');if(!foot)return;
+  const root=document.documentElement;let raf=0;
+  const upd=()=>{raf=0;const top=foot.getBoundingClientRect().top;root.style.setProperty('--foot-lift',Math.max(0,innerHeight-top)+'px')};
+  const req=()=>{if(!raf)raf=requestAnimationFrame(upd)};
+  addEventListener('scroll',req,{passive:true});addEventListener('resize',req);upd();
+})();
+</script>
+
+</body>
+</html>
